@@ -1,0 +1,4 @@
+#ignore les .class
+*.class
+#ignore la génération des fichiers de conf de intellij
+.idea
