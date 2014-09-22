@@ -13,6 +13,17 @@ import nio.engine.NioEngine;
 public class NioChannelImp extends NioChannel{
 
 	SocketChannel channel;
+	// Buffer for reading the length
+	ByteBuffer lengthBufferRead = ByteBuffer.allocate(4);
+	// Buffer for reading the incomming data
+	ByteBuffer bufferRead = null;
+	//The callBack
+	private DeliverCallback callback;
+	
+	private NioChannelImp nioChannelImp;
+	
+	private ByteBuffer out_buffer;
+	
 
 	public NioChannelImp(SocketChannel ch) {
 		this.channel = ch;
@@ -59,15 +70,23 @@ public class NioChannelImp extends NioChannel{
 	}
 
 	@Override
-	public void send(byte[] arg0, int arg1, int arg2) {
+	public void send(byte[] bytes, int offset, int length) {
 		// TODO Auto-generated method stub
+		while (length != 0 ){
+			this.out_buffer.put(bytes[length]);
+			offset++;
+			length--;
+		}
 
+		//nioChannelImp.wantToWrite(this);
 	}
 
 	@Override
 	public void setDeliverCallback(DeliverCallback arg0) {
 		// TODO Auto-generated method stub
-
+		this.callback = arg0;
 	}
+
+	
 
 }
