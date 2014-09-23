@@ -39,7 +39,7 @@ public abstract class NioEngineImp extends NioEngine{
 	public NioEngineImp() throws Exception {
 		super();
 
-		//Création du selector
+		//Crï¿½ation du selector
 		selector = SelectorProvider.provider().openSelector();
 
 	}
@@ -115,7 +115,7 @@ public abstract class NioEngineImp extends NioEngine{
 
 	/**
 	 * Accept a connection and make it non-blocking
-	 * @param the key of the channel on which a connection is requested
+	 * @param key : the key of the channel on which a connection is requested
 	 */
 	public void handleAccept(SelectionKey key){
 		SocketChannel socketChannel = null;
@@ -149,7 +149,7 @@ public abstract class NioEngineImp extends NioEngine{
 
 	/**
 	 * Finish to establish a connection
-	 * @param the key of the channel on which a connection is requested
+	 * @param key : the key of the channel on which a connection is requested
 	 */
 	public void handleConnection(SelectionKey key){
 		nioChannel.setChannel((SocketChannel) key.channel());
