@@ -1,4 +1,5 @@
 #ignore les .class
 *.class
-#ignore la génération des fichiers de conf de intellij
+#ignore la gÃ©nÃ©ration des fichiers de conf de intellij
 .idea
+*.iml
