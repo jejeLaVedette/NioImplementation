@@ -33,7 +33,7 @@ public abstract class NioEngineImp extends NioEngine{
 	private NioChannelImp nioChannel;
 
 	HashMap<SocketChannel, ByteBuffer> lengthBuffersWrite;	
-	HashMap<ServerSocketChannel, NioServer> nioServers;
+	HashMap<ServerSocketChannel, NioServerImp> nioServers;
 	HashMap<SocketChannel, NioChannelImp> nioChannels;
 
 	/* Variable de l'automate */
@@ -45,7 +45,7 @@ public abstract class NioEngineImp extends NioEngine{
 
 		//we create the selector
 		selector = SelectorProvider.provider().openSelector();
-		nioServers= new HashMap<ServerSocketChannel, NioServer>();
+		nioServers= new HashMap<ServerSocketChannel, NioServerImp>();
 		nioChannels= new HashMap<SocketChannel, NioChannelImp>();
 	}
 
@@ -59,7 +59,6 @@ public abstract class NioEngineImp extends NioEngine{
 			//say to it noBlocking
 			socketChannel.configureBlocking(false);
 
-			//we register our selector to connect
 			socketChannel.register(selector, SelectionKey.OP_CONNECT);
 			//and we "try" to connect 
 			socketChannel.connect(new InetSocketAddress(address, port));
@@ -82,9 +81,12 @@ public abstract class NioEngineImp extends NioEngine{
 
 			InetSocketAddress inetSocketAddress = new InetSocketAddress("localhost", port);
 			serverSocketChannel.socket().bind(inetSocketAddress);
-			serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
 
+			//will notify when there is incoming data
+			serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
+			//we fix the server with the AC and the SC
 			server = new NioServerImp(serverSocketChannel, ac);
+			// store it
 			nioServers.put(serverSocketChannel, server);
 
 		} catch (IOException e){
@@ -137,10 +139,9 @@ public abstract class NioEngineImp extends NioEngine{
 		return this.nioChannel; 
 	}
 
-
 	/**
-	 * Accept a connection and make it non-blocking
-	 * @param the key of the channel on which a connection is requested
+	 * will notify when there is connection and accept it and make it non blocking
+	 * @param key
 	 */
 	public void handleAccept(SelectionKey key){
 		SocketChannel socketChannel = null;
@@ -148,22 +149,30 @@ public abstract class NioEngineImp extends NioEngine{
 		try {
 			socketChannel = serverSocketChannel.accept();
 			socketChannel.configureBlocking(false);
+			//will notify when there is incoming data
 			socketChannel.register(this.selector, SelectionKey.OP_READ);
+			//
+			AcceptCallback acceptCallback = (nioServers.get(serverSocketChannel)).getCallback();
 
-			//AcceptCallback callback = nioServers.get(serverSocketChannel).getCallback();
-			//NioChannelImp nioChannel = new NioChannelImp(socketChannel, this);
-			//nioChannels.put(socketChannel, nioChannel);	
-
-
-			//callback.accepted(nioServers.get(serverSocketChannel), nioChannel);
+			NioChannelImp nioChannel = new NioChannelImp(socketChannel,this);
+			
+			nioChannels.put(socketChannel,nioChannel);
+			acceptCallback.accepted(nioServers.get(serverSocketChannel), nioChannel);
+			
 		} catch (IOException e) {
-			// as if there was no accept done
+			//we close the connection................... ??????
+			System.out.println(e);
 			nioChannel.close();
+			//or panic("Error during the handleAccept");
+
 		}
 	}
 
 	public void handleRead(SelectionKey key){
-
+		
+		SocketChannel socketChannel = (SocketChannel) key.channel();
+		//need to do the read method
+		this.nioChannels.get(socketChannel).read();
 	}
 
 
@@ -190,14 +199,4 @@ public abstract class NioEngineImp extends NioEngine{
 		key.interestOps(SelectionKey.OP_READ);	
 	}
 
-	public void wantToWrite(NioChannelImp nioChannel)
-	{
-		try {
-			nioChannel.getChannel().register(selector, SelectionKey.OP_WRITE);
-		} catch (ClosedChannelException e) {
-			e.printStackTrace();
-			System.exit(1);
-		}
-
-	}
 }

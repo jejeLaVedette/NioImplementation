@@ -23,10 +23,19 @@ public class NioChannelImp extends NioChannel{
 	private NioChannelImp nioChannelImp;
 	
 	private ByteBuffer out_buffer;
+	private SocketChannel socketChannel;
+	private NioEngineImp nioEngineImp;
+
 	
 
 	public NioChannelImp(SocketChannel ch) {
 		this.channel = ch;
+	}
+
+	public NioChannelImp(SocketChannel socketChannel, NioEngineImp nioEngineImp) {
+		// TODO Auto-generated constructor stub
+		this.socketChannel = socketChannel;
+		this.nioEngineImp = nioEngineImp;
 	}
 
 	@Override
@@ -78,15 +87,27 @@ public class NioChannelImp extends NioChannel{
 			length--;
 		}
 
-		//faire la demande d'écriture ?
 	}
 
 	@Override
-	public void setDeliverCallback(DeliverCallback arg0) {
+	public void setDeliverCallback(DeliverCallback dc) {
 		// TODO Auto-generated method stub
-		this.callback = arg0;
+		this.callback = dc;
 	}
 
-	
-
+	//hmm.... interessting method...
+	//need to used automaton
+	public void read() {
+		// TODO Auto-generated method stub
+		/**
+		 * code will be like this :
+		 * if (currentState ==ReadLength){
+		 * 		lenght = read the length on the channel
+		 * }
+		 * DONT FORGET -1 CASE
+		 * 
+		 * do the same for ReadMsg
+		 *  
+		 */
+	}
 }
