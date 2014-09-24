@@ -78,7 +78,7 @@ public class NioChannelImp extends NioChannel{
 			length--;
 		}
 
-		//nioChannelImp.wantToWrite(this);
+		//faire la demande d'écriture ?
 	}
 
 	@Override

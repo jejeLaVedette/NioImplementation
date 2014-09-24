@@ -11,6 +11,7 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 
@@ -19,18 +20,21 @@ import nio.engine.ConnectCallback;
 import nio.engine.NioEngine;
 import nio.engine.NioServer;
 
+/**
+ * This class will listen incoming connection
+ * and connect to remote ports
+ * @author Jérôme
+ *
+ */
+
 public abstract class NioEngineImp extends NioEngine{
 
 	private Selector selector;
 	private NioChannelImp nioChannel;
-	private ServerSocketChannel serverSocketChannel;
 
-	Hashtable<SocketChannel, ByteBuffer> lengthBuffersWrite;
-
-	InetAddress hostAddress;
-	
-	Hashtable<ServerSocketChannel, NioServerImp> nioServers;
-	Hashtable<SocketChannel, NioChannelImp> nioChannels;
+	HashMap<SocketChannel, ByteBuffer> lengthBuffersWrite;	
+	HashMap<ServerSocketChannel, NioServer> nioServers;
+	HashMap<SocketChannel, NioChannelImp> nioChannels;
 
 	/* Variable de l'automate */
 	State readState = State.READING_LENGTH;
@@ -39,35 +43,56 @@ public abstract class NioEngineImp extends NioEngine{
 	public NioEngineImp() throws Exception {
 		super();
 
-		//Création du selector
+		//we create the selector
 		selector = SelectorProvider.provider().openSelector();
-
+		nioServers= new HashMap<ServerSocketChannel, NioServer>();
+		nioChannels= new HashMap<SocketChannel, NioChannelImp>();
 	}
 
 	@Override
 	public void connect(InetAddress address, int port, ConnectCallback arg2)
 			throws UnknownHostException, SecurityException, IOException{
+		try {
 
-		nioChannel = new NioChannelImp(SocketChannel.open());
-		nioChannel.getChannel().configureBlocking(false);
+			//create the SC
+			SocketChannel socketChannel = SocketChannel.open();
+			//say to it noBlocking
+			socketChannel.configureBlocking(false);
 
-		nioChannel.getChannel().register(selector, SelectionKey.OP_CONNECT);
-		nioChannel.getChannel().connect(new InetSocketAddress(address, port));
+			//we register our selector to connect
+			socketChannel.register(selector, SelectionKey.OP_CONNECT);
+			//and we "try" to connect 
+			socketChannel.connect(new InetSocketAddress(address, port));
+		} catch (IOException e){
+			e.printStackTrace();
+			System.exit(1);
+		}
 
-		//arg2.methodNotify();
 	}
 
 	@Override
-	public NioServer listen(int arg0, AcceptCallback arg1) throws IOException{
-		serverSocketChannel = ServerSocketChannel.open();
-		serverSocketChannel.configureBlocking(false);
+	public NioServer listen(int port, AcceptCallback ac) throws IOException{
+		
+		NioServerImp server = null;
+		
+		try{
+			
+			ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
+			serverSocketChannel.configureBlocking(false);
 
+			InetSocketAddress inetSocketAddress = new InetSocketAddress("localhost", port);
+			serverSocketChannel.socket().bind(inetSocketAddress);
+			serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
 
-		InetSocketAddress addressToBind = new InetSocketAddress(hostAddress, arg0);
-		serverSocketChannel.socket().bind(addressToBind);
+			server = new NioServerImp(serverSocketChannel, ac);
+			nioServers.put(serverSocketChannel, server);
 
-		return null;
-
+		} catch (IOException e){
+			e.printStackTrace();
+			System.exit(1);
+		}
+		
+		return server;
 	}
 
 
@@ -128,7 +153,7 @@ public abstract class NioEngineImp extends NioEngine{
 			//AcceptCallback callback = nioServers.get(serverSocketChannel).getCallback();
 			//NioChannelImp nioChannel = new NioChannelImp(socketChannel, this);
 			//nioChannels.put(socketChannel, nioChannel);	
-			
+
 
 			//callback.accepted(nioServers.get(serverSocketChannel), nioChannel);
 		} catch (IOException e) {
@@ -138,13 +163,13 @@ public abstract class NioEngineImp extends NioEngine{
 	}
 
 	public void handleRead(SelectionKey key){
-		
+
 	}
 
 
 
 	public void handleWrite(SelectionKey key){
-		
+
 	}
 
 	/**
@@ -164,11 +189,11 @@ public abstract class NioEngineImp extends NioEngine{
 		}
 		key.interestOps(SelectionKey.OP_READ);	
 	}
-	
+
 	public void wantToWrite(NioChannelImp nioChannel)
 	{
 		try {
-				nioChannel.getChannel().register(selector, SelectionKey.OP_WRITE);
+			nioChannel.getChannel().register(selector, SelectionKey.OP_WRITE);
 		} catch (ClosedChannelException e) {
 			e.printStackTrace();
 			System.exit(1);
