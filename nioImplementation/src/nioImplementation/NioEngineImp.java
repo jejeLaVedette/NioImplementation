@@ -172,7 +172,13 @@ public abstract class NioEngineImp extends NioEngine{
 		
 		SocketChannel socketChannel = (SocketChannel) key.channel();
 		//need to do the read method
-		this.nioChannels.get(socketChannel).read();
+		try {
+			this.nioChannels.get(socketChannel).read();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			NioEngine.panic("error during read medoth");
+		}
 	}
 
 

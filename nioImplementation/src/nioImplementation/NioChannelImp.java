@@ -4,7 +4,9 @@ package nioImplementation;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
+import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
+import java.nio.charset.Charset;
 
 import nio.engine.DeliverCallback;
 import nio.engine.NioChannel;
@@ -19,14 +21,22 @@ public class NioChannelImp extends NioChannel{
 	ByteBuffer bufferRead = null;
 	//The callBack
 	private DeliverCallback callback;
-	
+
 	private NioChannelImp nioChannelImp;
-	
+
 	private ByteBuffer out_buffer;
 	private SocketChannel socketChannel;
 	private NioEngineImp nioEngineImp;
 
-	
+	static final int READING_LENGTH = 1;
+	static final int READING_MSG = 2;
+	int currentStateRead = READING_LENGTH;
+
+	static final int WRITING_LENGTH = 1;
+	static final int WRITING_MSG = 2;
+	int currentStateWrite = WRITING_LENGTH;
+
+
 
 	public NioChannelImp(SocketChannel ch) {
 		this.channel = ch;
@@ -95,19 +105,63 @@ public class NioChannelImp extends NioChannel{
 		this.callback = dc;
 	}
 
-	//hmm.... interessting method...
-	//need to used automaton
-	public void read() {
+
+	public void read() throws IOException {
 		// TODO Auto-generated method stub
-		/**
-		 * code will be like this :
-		 * if (currentState ==ReadLength){
-		 * 		lenght = read the length on the channel
-		 * }
-		 * DONT FORGET -1 CASE
-		 * 
-		 * do the same for ReadMsg
-		 *  
-		 */
+		
+		//we need to get the current key about our channel
+		//The key returned when this channel was last registered with the given selector, or null if this channel is not 
+		//currently registered with that selector 
+		SelectionKey key = this.channel.keyFor(this.nioEngineImp.getSelector());
+		lengthBufferRead.clear();
+		int nb = 0;
+		if(currentStateRead == READING_LENGTH){
+			try{
+				nb = socketChannel.read(lengthBufferRead);
+			}catch(IOException e){
+				key.channel().close();
+				key.cancel();
+				return;
+			}
+
+			// -1 case : we close the connection
+			if(nb == -1){
+				key.channel().close();
+				key.cancel();
+				NioEngine.panic("nb = -1 : error during reading length");
+				return;
+			}
+
+
+			if(lengthBufferRead.remaining() == 0){
+				int length = lengthBufferRead.getInt(0);
+				out_buffer = ByteBuffer.allocate(length);
+				lengthBufferRead.position(0);
+				currentStateRead = READING_MSG;
+			}
+			
+		} else if(currentStateRead == READING_MSG){
+
+			try{
+				nb = socketChannel.read(out_buffer);
+			}catch(IOException e){
+				key.channel().close();
+				key.cancel();
+				NioEngine.panic("nb = -1 : error during reading message");
+				return;
+			}
+
+			// cas avec -1 fermeture de connection
+			if(nb == -1){
+				key.channel().close();
+				key.cancel();
+				return;
+			}
+
+			if(out_buffer.remaining() == 0){
+				currentStateRead = READING_LENGTH;
+			}
+		}
+
 	}
 }
