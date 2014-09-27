@@ -177,14 +177,21 @@ public abstract class NioEngineImp extends NioEngine{
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			NioEngine.panic("error during read medoth");
+			NioEngine.panic("error in handleRead");
 		}
 	}
 
 
 
 	public void handleWrite(SelectionKey key){
-
+		SocketChannel socketChannel = (SocketChannel) key.channel();
+		try {
+			this.nioChannels.get(socketChannel).write();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			NioEngine.panic("error in handleWrite");
+		}
 	}
 
 	/**

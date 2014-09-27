@@ -1,12 +1,12 @@
 package nioImplementation;
 
-//test de push
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.Charset;
+import java.util.Hashtable;
 
 import nio.engine.DeliverCallback;
 import nio.engine.NioChannel;
@@ -17,8 +17,14 @@ public class NioChannelImp extends NioChannel{
 	SocketChannel channel;
 	// Buffer for reading the length
 	ByteBuffer lengthBufferRead = ByteBuffer.allocate(4);
-	// Buffer for reading the incomming data
+	// Buffer for reading the incoming data
 	ByteBuffer bufferRead = null;
+
+	// Buffer for writing the length
+	ByteBuffer lengthBufferWrite = ByteBuffer.allocate(4);
+	// Buffer for reading the incoming data
+	ByteBuffer bufferWrite = null;
+
 	//The callBack
 	private DeliverCallback callback;
 
@@ -83,9 +89,9 @@ public class NioChannelImp extends NioChannel{
 	}
 
 	@Override
-	public void send(ByteBuffer arg0) {
+	public void send(ByteBuffer buffer) {
 		// TODO Auto-generated method stub
-
+		out_buffer = buffer.duplicate();
 	}
 
 	@Override
@@ -108,7 +114,7 @@ public class NioChannelImp extends NioChannel{
 
 	public void read() throws IOException {
 		// TODO Auto-generated method stub
-		
+
 		//we need to get the current key about our channel
 		//The key returned when this channel was last registered with the given selector, or null if this channel is not 
 		//currently registered with that selector 
@@ -139,7 +145,7 @@ public class NioChannelImp extends NioChannel{
 				lengthBufferRead.position(0);
 				currentStateRead = READING_MSG;
 			}
-			
+
 		} else if(currentStateRead == READING_MSG){
 
 			try{
@@ -163,5 +169,43 @@ public class NioChannelImp extends NioChannel{
 			}
 		}
 
+	}
+
+	public void write() throws IOException {
+		// TODO Auto-generated method stub
+		SelectionKey key = this.channel.keyFor(this.nioEngineImp.getSelector());
+
+		if(currentStateWrite == WRITING_LENGTH){
+
+			try{
+				socketChannel.write(lengthBufferWrite);
+			}catch(IOException e){
+				key.cancel(); 
+				socketChannel.close(); 
+				return; 
+			}
+
+			if(lengthBufferWrite.remaining() == 0){
+				currentStateWrite = WRITING_MSG;
+			}
+
+		} else if(currentStateWrite == WRITING_MSG){
+
+			if(lengthBufferWrite.remaining() > 0){
+
+				try{
+					socketChannel.write(lengthBufferWrite);
+				}catch(IOException e){
+					key.cancel(); 
+					socketChannel.close(); 
+					return; 
+				}
+			}
+
+			if(lengthBufferWrite.remaining() == 0){
+				key.interestOps(SelectionKey.OP_READ);
+				currentStateWrite = WRITING_LENGTH;
+			}
+		}
 	}
 }
