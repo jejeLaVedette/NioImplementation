@@ -7,6 +7,12 @@ import nio.engine.AcceptCallback;
 import nio.engine.ConnectCallback;
 import nio.engine.NioEngine;
 
+
+/**
+ * Class for the test of ping-pong
+ * @author Jérôme
+ *
+ */
 public class TestNio {
 	public static void server(int port){
 		NioEngineImp nioEngine = null;

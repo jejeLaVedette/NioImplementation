@@ -5,6 +5,12 @@ import java.nio.ByteBuffer;
 import nio.engine.DeliverCallback;
 import nio.engine.NioChannel;
 
+/**
+ * 
+ * @author Jérôme
+ *
+ */
+
 public class DeliverCallbackImp implements DeliverCallback{
 
 	@Override

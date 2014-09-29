@@ -3,6 +3,12 @@ package nioImplementation;
 import nio.engine.ConnectCallback;
 import nio.engine.NioChannel;
 
+/**
+ * 
+ * @author Jérôme
+ *
+ */
+
 public class ConnectCallbackImplementation implements ConnectCallback{
 
 	@Override

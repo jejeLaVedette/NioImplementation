@@ -4,6 +4,12 @@ import nio.engine.AcceptCallback;
 import nio.engine.NioChannel;
 import nio.engine.NioServer;
 
+/**
+ * 
+ * @author Jérôme
+ *
+ */
+
 public class AcceptCallbackImp implements AcceptCallback {
 	
 	@Override

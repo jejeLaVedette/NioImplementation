@@ -55,6 +55,7 @@ public class NioChannelImp extends NioChannel{
 		lengthBufferWrite = ByteBuffer.allocate(4);
 		bufferRead = null;
 		bufferWrite = null;
+		callback = new DeliverCallbackImp(); 
 	}
 
 	@Override

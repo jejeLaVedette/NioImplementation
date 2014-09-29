@@ -6,6 +6,10 @@ import java.nio.channels.ServerSocketChannel;
 import nio.engine.AcceptCallback;
 import nio.engine.NioServer;
 
+/**+ * 
+ * @author Jérôme
+ *
+ */
 public class NioServerImp extends NioServer{
 
 	private ServerSocketChannel serverSocketChannel;
