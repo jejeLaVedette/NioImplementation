@@ -14,16 +14,16 @@ import nio.engine.NioEngine;
 
 public class NioChannelImp extends NioChannel{
 
-	SocketChannel channel;
+	private SocketChannel channel;
 	// Buffer for reading the length
-	ByteBuffer lengthBufferRead = ByteBuffer.allocate(4);
+	private ByteBuffer lengthBufferRead;
 	// Buffer for reading the incoming data
-	ByteBuffer bufferRead = null;
+	private ByteBuffer bufferRead;
 
 	// Buffer for writing the length
-	ByteBuffer lengthBufferWrite = ByteBuffer.allocate(4);
+	private ByteBuffer lengthBufferWrite;
 	// Buffer for reading the incoming data
-	ByteBuffer bufferWrite = null;
+	private ByteBuffer bufferWrite;
 
 	//The callBack
 	private DeliverCallback callback;
@@ -41,17 +41,16 @@ public class NioChannelImp extends NioChannel{
 	static final int WRITING_LENGTH = 1;
 	static final int WRITING_MSG = 2;
 	int currentStateWrite = WRITING_LENGTH;
-
-
-
-	public NioChannelImp(SocketChannel ch) {
-		this.channel = ch;
-	}
+ 
 
 	public NioChannelImp(SocketChannel socketChannel, NioEngineImp nioEngineImp) {
 		// TODO Auto-generated constructor stub
 		this.socketChannel = socketChannel;
 		this.nioEngineImp = nioEngineImp;
+		lengthBufferRead = ByteBuffer.allocate(4);
+		lengthBufferWrite = ByteBuffer.allocate(4);
+		bufferRead = null;
+		bufferWrite = null;
 	}
 
 	@Override
@@ -62,7 +61,9 @@ public class NioChannelImp extends NioChannel{
 			System.out.println("The channel is already closed");
 		}
 
-		// Il manque encore une ligne quand à l'annulation par cancel du selector.
+		//selector annulation.
+		channel.keyFor(this.nioEngineImp.getSelector()).cancel();
+
 	}
 
 	@Override
@@ -91,18 +92,21 @@ public class NioChannelImp extends NioChannel{
 	@Override
 	public void send(ByteBuffer buffer) {
 		// TODO Auto-generated method stub
-		out_buffer = buffer.duplicate();
+		nioEngineImp.wantToWrite(this);
 	}
 
 	@Override
 	public void send(byte[] bytes, int offset, int length) {
 		// TODO Auto-generated method stub
+
+		ByteBuffer buff = ByteBuffer.allocate(length);
+
 		while (length != 0 ){
-			this.out_buffer.put(bytes[length]);
+			buff.put(bytes[offset]);
 			offset++;
 			length--;
 		}
-
+		send(buff);
 	}
 
 	@Override
@@ -175,6 +179,7 @@ public class NioChannelImp extends NioChannel{
 		// TODO Auto-generated method stub
 		SelectionKey key = this.channel.keyFor(this.nioEngineImp.getSelector());
 
+
 		if(currentStateWrite == WRITING_LENGTH){
 
 			try{
@@ -203,7 +208,6 @@ public class NioChannelImp extends NioChannel{
 			}
 
 			if(lengthBufferWrite.remaining() == 0){
-				key.interestOps(SelectionKey.OP_READ);
 				currentStateWrite = WRITING_LENGTH;
 			}
 		}

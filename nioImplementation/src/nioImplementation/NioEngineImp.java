@@ -12,7 +12,6 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Iterator;
 
 import nio.engine.AcceptCallback;
@@ -27,7 +26,7 @@ import nio.engine.NioServer;
  *
  */
 
-public abstract class NioEngineImp extends NioEngine{
+public class NioEngineImp extends NioEngine{
 
 	private Selector selector;
 	private NioChannelImp nioChannel;
@@ -41,8 +40,6 @@ public abstract class NioEngineImp extends NioEngine{
 	State writeState = State.WRITING_LENGTH;
 
 	public NioEngineImp() throws Exception {
-		super();
-
 		//we create the selector
 		selector = SelectorProvider.provider().openSelector();
 		nioServers= new HashMap<ServerSocketChannel, NioServerImp>();
@@ -71,11 +68,11 @@ public abstract class NioEngineImp extends NioEngine{
 
 	@Override
 	public NioServer listen(int port, AcceptCallback ac) throws IOException{
-		
+
 		NioServerImp server = null;
-		
+
 		try{
-			
+
 			ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
 			serverSocketChannel.configureBlocking(false);
 
@@ -93,7 +90,7 @@ public abstract class NioEngineImp extends NioEngine{
 			e.printStackTrace();
 			System.exit(1);
 		}
-		
+
 		return server;
 	}
 
@@ -155,10 +152,10 @@ public abstract class NioEngineImp extends NioEngine{
 			AcceptCallback acceptCallback = (nioServers.get(serverSocketChannel)).getCallback();
 
 			NioChannelImp nioChannel = new NioChannelImp(socketChannel,this);
-			
+
 			nioChannels.put(socketChannel,nioChannel);
 			acceptCallback.accepted(nioServers.get(serverSocketChannel), nioChannel);
-			
+
 		} catch (IOException e) {
 			//we close the connection................... ??????
 			System.out.println(e);
@@ -169,7 +166,7 @@ public abstract class NioEngineImp extends NioEngine{
 	}
 
 	public void handleRead(SelectionKey key){
-		
+
 		SocketChannel socketChannel = (SocketChannel) key.channel();
 		//need to do the read method
 		try {
@@ -210,6 +207,16 @@ public abstract class NioEngineImp extends NioEngine{
 			return;
 		}
 		key.interestOps(SelectionKey.OP_READ);	
+	}
+
+	public void wantToWrite(NioChannelImp nChannel)
+	{
+		try {
+			nChannel.getChannel().register(selector, SelectionKey.OP_WRITE | SelectionKey.OP_READ);
+		} catch (ClosedChannelException e) {
+			e.printStackTrace();
+			panic("Impossible to ask writing");
+		}
 	}
 
 }
