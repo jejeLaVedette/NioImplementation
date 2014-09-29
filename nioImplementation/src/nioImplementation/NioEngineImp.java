@@ -32,7 +32,7 @@ public class NioEngineImp extends NioEngine{
 	private NioChannelImp nioChannel;
 
 	HashMap<SocketChannel, ByteBuffer> lengthBuffersWrite;	
-	HashMap<ServerSocketChannel, NioServerImp> nioServers;
+	HashMap<ServerSocketChannel, NioServer> nioServers;
 	HashMap<SocketChannel, NioChannelImp> nioChannels;
 
 	/* Variable de l'automate */
@@ -42,7 +42,7 @@ public class NioEngineImp extends NioEngine{
 	public NioEngineImp() throws Exception {
 		//we create the selector
 		selector = SelectorProvider.provider().openSelector();
-		nioServers= new HashMap<ServerSocketChannel, NioServerImp>();
+		nioServers= new HashMap<ServerSocketChannel, NioServer>();
 		nioChannels= new HashMap<SocketChannel, NioChannelImp>();
 	}
 
@@ -50,7 +50,6 @@ public class NioEngineImp extends NioEngine{
 	public void connect(InetAddress address, int port, ConnectCallback arg2)
 			throws UnknownHostException, SecurityException, IOException{
 		try {
-
 			//create the SC
 			SocketChannel socketChannel = SocketChannel.open();
 			//say to it noBlocking
@@ -59,6 +58,10 @@ public class NioEngineImp extends NioEngine{
 			socketChannel.register(selector, SelectionKey.OP_CONNECT);
 			//and we "try" to connect 
 			socketChannel.connect(new InetSocketAddress(address, port));
+			
+			System.out.println("Connected at @ : " +address+ " on port : "+port);
+			
+
 		} catch (IOException e){
 			e.printStackTrace();
 			System.exit(1);
@@ -90,7 +93,6 @@ public class NioEngineImp extends NioEngine{
 			e.printStackTrace();
 			System.exit(1);
 		}
-
 		return server;
 	}
 
@@ -149,7 +151,7 @@ public class NioEngineImp extends NioEngine{
 			//will notify when there is incoming data
 			socketChannel.register(this.selector, SelectionKey.OP_READ);
 			//
-			AcceptCallback acceptCallback = (nioServers.get(serverSocketChannel)).getCallback();
+			AcceptCallback acceptCallback = ((NioServerImp) nioServers.get(serverSocketChannel)).getCallback();
 
 			NioChannelImp nioChannel = new NioChannelImp(socketChannel,this);
 

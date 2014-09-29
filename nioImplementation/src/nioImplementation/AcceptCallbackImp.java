@@ -5,14 +5,15 @@ import nio.engine.NioChannel;
 import nio.engine.NioServer;
 
 public class AcceptCallbackImp implements AcceptCallback {
-
+	
 	@Override
-	public void accepted(NioServer arg0, NioChannel arg1) {
+	public void accepted(NioServer ns, NioChannel nc) {
 		// TODO Auto-generated method stub
-		System.out.println("Succesfully connected to the port " + arg0.getPort() + " to " + arg1.getRemoteAddress());
+		System.out.println("Succesfully connected to the port " + ns.getPort() + " to " + nc.getRemoteAddress());
+		
 	}
-
-	@Override
+ 
+	@Override 
 	public void closed(NioChannel arg0) {
 		// TODO Auto-generated method stub
 		System.out.println("NioChannel closed");

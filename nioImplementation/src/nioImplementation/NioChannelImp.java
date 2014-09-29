@@ -5,12 +5,16 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
-import java.nio.charset.Charset;
-import java.util.Hashtable;
 
 import nio.engine.DeliverCallback;
 import nio.engine.NioChannel;
 import nio.engine.NioEngine;
+
+/**
+ * 
+ * @author Jérôme
+ *
+ */
 
 public class NioChannelImp extends NioChannel{
 

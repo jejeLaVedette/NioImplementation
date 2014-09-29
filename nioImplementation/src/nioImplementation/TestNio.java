@@ -56,7 +56,7 @@ public class TestNio {
 	public static void main(String args[]){
 		new Thread(new Runnable() {
 			public void run() {
-				server(4212);
+				server(3333);
 			}
 		}).start();
 
@@ -70,7 +70,7 @@ public class TestNio {
 
 		new Thread(new Runnable() {
 			public void run() {
-				client(4212);
+				client(3333);
 			}
 		}).start();
 	}
