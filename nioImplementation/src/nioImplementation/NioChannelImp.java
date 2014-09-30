@@ -45,7 +45,7 @@ public class NioChannelImp extends NioChannel{
 	static final int WRITING_LENGTH = 1;
 	static final int WRITING_MSG = 2;
 	int currentStateWrite = WRITING_LENGTH;
- 
+
 
 	public NioChannelImp(SocketChannel socketChannel, NioEngineImp nioEngineImp) {
 		// TODO Auto-generated constructor stub
@@ -97,7 +97,7 @@ public class NioChannelImp extends NioChannel{
 	@Override
 	public void send(ByteBuffer buffer) {
 		// TODO Auto-generated method stub
-		nioEngineImp.wantToWrite(this);
+		System.out.println("do nothing in this send oO");
 	}
 
 	@Override
@@ -111,7 +111,7 @@ public class NioChannelImp extends NioChannel{
 			offset++;
 			length--;
 		}
-		send(buff);
+		nioEngineImp.wantToWrite(this);
 	}
 
 	@Override

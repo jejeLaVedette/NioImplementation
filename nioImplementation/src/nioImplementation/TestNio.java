@@ -32,6 +32,7 @@ public class TestNio {
 
 		System.out.println("server launch");
 		nioEngine.mainloop();
+		System.out.println("server after mainloop");
 
 
 	}
@@ -39,7 +40,6 @@ public class TestNio {
 	public static void client(int port){
 		NioEngineImp nioEngine = null;
 		ConnectCallback cc = new ConnectCallbackImplementation(); 
-
 
 		try{
 			nioEngine = new NioEngineImp();
@@ -57,12 +57,14 @@ public class TestNio {
 
 		nioEngine.mainloop();
 
+		System.out.println("client after mainloop");
+
 	}
 
 	public static void main(String args[]){
 		new Thread(new Runnable() {
 			public void run() {
-				server(3333);
+				server(3334);
 			}
 		}).start();
 
@@ -76,7 +78,7 @@ public class TestNio {
 
 		new Thread(new Runnable() {
 			public void run() {
-				client(3333);
+				client(3334);
 			}
 		}).start();
 	}

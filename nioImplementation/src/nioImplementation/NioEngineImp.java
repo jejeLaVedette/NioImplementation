@@ -34,6 +34,7 @@ public class NioEngineImp extends NioEngine{
 	HashMap<SocketChannel, ByteBuffer> lengthBuffersWrite;	
 	HashMap<ServerSocketChannel, NioServer> nioServers;
 	HashMap<SocketChannel, NioChannelImp> nioChannels;
+	HashMap<SocketChannel, ConnectCallback> nioChannelCallback;
 
 	/* Variable de l'automate */
 	State readState = State.READING_LENGTH;
@@ -44,10 +45,11 @@ public class NioEngineImp extends NioEngine{
 		selector = SelectorProvider.provider().openSelector();
 		nioServers= new HashMap<ServerSocketChannel, NioServer>();
 		nioChannels= new HashMap<SocketChannel, NioChannelImp>();
+		nioChannelCallback = new HashMap<SocketChannel, ConnectCallback>();
 	}
 
 	@Override
-	public void connect(InetAddress address, int port, ConnectCallback arg2)
+	public void connect(InetAddress address, int port, ConnectCallback cc)
 			throws UnknownHostException, SecurityException, IOException{
 		try {
 			//create the SC
@@ -58,9 +60,9 @@ public class NioEngineImp extends NioEngine{
 			socketChannel.register(selector, SelectionKey.OP_CONNECT);
 			//and we "try" to connect 
 			socketChannel.connect(new InetSocketAddress(address, port));
-			
-			System.out.println("Connected at @ : " +address+ " on port : "+port);
-			
+
+			nioChannelCallback.put(socketChannel, cc);
+
 
 		} catch (IOException e){
 			e.printStackTrace();
@@ -115,6 +117,7 @@ public class NioEngineImp extends NioEngine{
 					} else if (key.isAcceptable()) {
 						handleAccept(key);
 					} else if (key.isReadable()) {
+						System.out.println("read");
 						handleRead(key);
 					} else if (key.isWritable()) {
 						handleWrite(key);
@@ -145,24 +148,34 @@ public class NioEngineImp extends NioEngine{
 	public void handleAccept(SelectionKey key){
 		SocketChannel socketChannel = null;
 		ServerSocketChannel serverSocketChannel = (ServerSocketChannel) key.channel();
+
 		try {
+
 			socketChannel = serverSocketChannel.accept();
+
 			socketChannel.configureBlocking(false);
+
 			//will notify when there is incoming data
 			socketChannel.register(this.selector, SelectionKey.OP_READ);
-			//
+
 			AcceptCallback acceptCallback = ((NioServerImp) nioServers.get(serverSocketChannel)).getCallback();
 
 			NioChannelImp nioChannel = new NioChannelImp(socketChannel,this);
 
 			nioChannels.put(socketChannel,nioChannel);
+			System.out.println("nioServers : " +nioServers);
+			System.out.println("nioChannel : " +nioChannel);
+			System.out.println("nioServers.get(serverSocketChannel) : "+nioServers.get(serverSocketChannel));
 			acceptCallback.accepted(nioServers.get(serverSocketChannel), nioChannel);
+			
+			System.out.println("After");
+
 
 		} catch (IOException e) {
 			//we close the connection................... ??????
+			//panic("Error during the handleAccept");
 			System.out.println(e);
 			nioChannel.close();
-			//or panic("Error during the handleAccept");
 
 		}
 	}
@@ -198,10 +211,10 @@ public class NioEngineImp extends NioEngine{
 	 * @param the key of the channel on which a connection is requested
 	 */
 	public void handleConnection(SelectionKey key){
-		nioChannel.setChannel((SocketChannel) key.channel());
+		SocketChannel sc = (SocketChannel) key.channel();
 
 		try {
-			nioChannel.getChannel().finishConnect();
+			sc.finishConnect();
 		} catch (IOException e) {
 			// cancel the channel's registration with our selector 
 			System.out.println(e);
@@ -209,6 +222,10 @@ public class NioEngineImp extends NioEngine{
 			return;
 		}
 		key.interestOps(SelectionKey.OP_READ);	
+
+		NioChannelImp nioChannel = new NioChannelImp(sc, this);
+		nioChannels.put(sc, nioChannel);
+		nioChannelCallback.get(sc).connected(nioChannel);
 	}
 
 	public void wantToWrite(NioChannelImp nChannel)
