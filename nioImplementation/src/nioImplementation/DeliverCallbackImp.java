@@ -17,6 +17,9 @@ public class DeliverCallbackImp implements DeliverCallback{
 	public void deliver(NioChannel arg0, ByteBuffer arg1) {
 		System.out.println("Message received from : " + arg0.getRemoteAddress() + " : " + new String(arg1.array()));
 		
+		String ping="ping";
+		arg0.send(ping.getBytes(),0,ping.getBytes().length);
+
 	}
 
 }

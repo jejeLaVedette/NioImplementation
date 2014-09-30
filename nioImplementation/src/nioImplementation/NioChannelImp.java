@@ -137,7 +137,7 @@ public class NioChannelImp extends NioChannel{
 		
 		if(currentStateRead == READING_DONE){
 			bufferRead = null;
-			bufferRead.position(0);
+			lengthBufferRead.position(0);
 			currentStateRead = READING_LENGTH;
 		}
 		
@@ -166,9 +166,10 @@ public class NioChannelImp extends NioChannel{
 				currentStateRead = READING_MSG;
 			}
 
-		} else if(currentStateRead == READING_MSG){
+		} if(currentStateRead == READING_MSG){
 
 			try{
+
 				nb = channel.read(bufferRead);
 			}catch(IOException e){
 				key.channel().close();
@@ -184,7 +185,10 @@ public class NioChannelImp extends NioChannel{
 				return;
 			}
 
+			//we read all the buffer so we send
 			if(bufferRead.remaining() == 0){
+				//we duplicate because the buffer will be remplace by a new buffer
+				// on the next step, so mb we will lost our message
 				callback.deliver(this, bufferRead.duplicate());
 				currentStateRead = READING_LENGTH;
 			}
