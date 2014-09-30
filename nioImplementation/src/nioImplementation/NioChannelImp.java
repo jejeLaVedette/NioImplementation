@@ -20,6 +20,7 @@ import nio.engine.NioEngine;
 public class NioChannelImp extends NioChannel{
 
 	private SocketChannel channel;
+	
 	// Buffer for reading the length
 	private ByteBuffer lengthBufferRead;
 	// Buffer for reading the incoming data
@@ -34,8 +35,6 @@ public class NioChannelImp extends NioChannel{
 	private DeliverCallback callback;
 
 
-	private ByteBuffer out_buffer;
-	private SocketChannel socketChannel;
 	private NioEngineImp nioEngineImp;
 
 	static final int READING_LENGTH = 1;
@@ -144,7 +143,7 @@ public class NioChannelImp extends NioChannel{
 		
 		if(currentStateRead == READING_LENGTH){
 			try{
-				nb = socketChannel.read(lengthBufferRead);
+				nb = channel.read(lengthBufferRead);
 			}catch(IOException e){
 				key.channel().close();
 				key.cancel();
@@ -162,7 +161,7 @@ public class NioChannelImp extends NioChannel{
 
 			if(lengthBufferRead.remaining() == 0){
 				int length = lengthBufferRead.getInt(0);
-				out_buffer = ByteBuffer.allocate(length);
+				bufferRead = ByteBuffer.allocate(length);
 				lengthBufferRead.position(0);
 				currentStateRead = READING_MSG;
 			}
@@ -170,7 +169,7 @@ public class NioChannelImp extends NioChannel{
 		} else if(currentStateRead == READING_MSG){
 
 			try{
-				nb = socketChannel.read(out_buffer);
+				nb = channel.read(bufferRead);
 			}catch(IOException e){
 				key.channel().close();
 				key.cancel();
@@ -185,7 +184,8 @@ public class NioChannelImp extends NioChannel{
 				return;
 			}
 
-			if(out_buffer.remaining() == 0){
+			if(bufferRead.remaining() == 0){
+				callback.deliver(this, bufferRead.duplicate());
 				currentStateRead = READING_LENGTH;
 			}
 		}
@@ -201,9 +201,10 @@ public class NioChannelImp extends NioChannel{
 				bufferWrite = listBuffer.get(0);
 				listBuffer.remove(0);
 				bufferWrite.position(0);
-				bufferWrite.position(0);
-				bufferWrite.putInt(bufferWrite.capacity());
-				bufferWrite.position(0);
+				lengthBufferWrite.position(0);
+				System.out.println("bufferWrite.capacity() : "+bufferWrite.capacity());
+				lengthBufferWrite.putInt(bufferWrite.capacity());
+				lengthBufferWrite.position(0);
 				currentStateWrite = WRITING_LENGTH;
 			}
 		}
@@ -212,10 +213,10 @@ public class NioChannelImp extends NioChannel{
 		if(currentStateWrite == WRITING_LENGTH){
 
 			try{
-				socketChannel.write(lengthBufferWrite);
+				channel.write(lengthBufferWrite);
 			}catch(IOException e){
 				key.cancel(); 
-				socketChannel.close(); 
+				channel.close(); 
 			}
 
 			if(lengthBufferWrite.remaining() == 0){
@@ -227,10 +228,10 @@ public class NioChannelImp extends NioChannel{
 			if(lengthBufferWrite.remaining() > 0){
 
 				try{
-					socketChannel.write(lengthBufferWrite);
+					channel.write(lengthBufferWrite);
 				}catch(IOException e){
 					key.cancel(); 
-					socketChannel.close(); 
+					channel.close(); 
 				}
 			}
 
