@@ -43,8 +43,11 @@ public class NioEngineImp extends NioEngine{
 	public NioEngineImp() throws Exception {
 		//we create the selector
 		selector = SelectorProvider.provider().openSelector();
+		//we keep the link between SC and server
 		nioServers= new HashMap<ServerSocketChannel, NioServer>();
+		//we keep the link between SC and channel
 		nioChannels= new HashMap<SocketChannel, NioChannelImp>();
+		//we keep the link between SC and CB
 		nioChannelCallback = new HashMap<SocketChannel, ConnectCallback>();
 	}
 
