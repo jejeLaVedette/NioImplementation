@@ -81,5 +81,11 @@ public class TestNio {
 				client(3334);
 			}
 		}).start();
+		
+		new Thread(new Runnable() {
+			public void run() {
+				client(3334);
+			}
+		}).start();
 	}
 }
