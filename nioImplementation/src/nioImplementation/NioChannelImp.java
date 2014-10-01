@@ -33,7 +33,10 @@ public class NioChannelImp extends NioChannel{
 
 	//The callBack
 	private DeliverCallback callback;
-
+	
+	
+	// List of ByteBuffer
+	ArrayList<ByteBuffer> listBuffer;
 
 	private NioEngineImp nioEngineImp;
 
@@ -46,10 +49,7 @@ public class NioChannelImp extends NioChannel{
 	static final int WRITING_MSG = 2;
 	static final int WRITING_DONE = 3;
 	int currentStateWrite = WRITING_DONE;
-
-	// List of ByteBuffer
-	ArrayList<ByteBuffer> listBuffer;
-
+	
 
 	public NioChannelImp(SocketChannel socketChannel, NioEngineImp nioEngineImp) {
 		// TODO Auto-generated constructor stub
@@ -60,6 +60,7 @@ public class NioChannelImp extends NioChannel{
 		lengthBufferWrite = ByteBuffer.allocate(4);
 		callback = new DeliverCallbackImp(); 
 	}
+	
 
 	@Override
 	public void close() {
@@ -109,7 +110,6 @@ public class NioChannelImp extends NioChannel{
 		// TODO Auto-generated method stub
 
 		ByteBuffer buff = ByteBuffer.allocate(length);
-
 		while (length != 0 ){
 			buff.put(bytes[offset]);
 			offset++;
@@ -141,9 +141,9 @@ public class NioChannelImp extends NioChannel{
 			currentStateRead = READING_LENGTH;
 		}
 		
-		if(currentStateRead == READING_LENGTH){
+		if(currentStateRead == READING_LENGTH){	
 			try{
-				nb = channel.read(lengthBufferRead);
+				nb = channel.read(lengthBufferRead);		
 			}catch(IOException e){
 				key.channel().close();
 				key.cancel();
@@ -160,13 +160,13 @@ public class NioChannelImp extends NioChannel{
 
 
 			if(lengthBufferRead.remaining() == 0){
+				lengthBufferRead.position(0);
 				int length = lengthBufferRead.getInt(0);
 				bufferRead = ByteBuffer.allocate(length);
-				lengthBufferRead.position(0);
 				currentStateRead = READING_MSG;
 			}
 
-		} if(currentStateRead == READING_MSG){
+		} if(currentStateRead == READING_MSG){	
 
 			try{
 
@@ -190,7 +190,7 @@ public class NioChannelImp extends NioChannel{
 				//we duplicate because the buffer will be remplace by a new buffer
 				// on the next step, so mb we will lost our message
 				callback.deliver(this, bufferRead.duplicate());
-				currentStateRead = READING_LENGTH;
+				currentStateRead = READING_DONE;
 			}
 		}
 
@@ -200,13 +200,12 @@ public class NioChannelImp extends NioChannel{
 		// TODO Auto-generated method stub
 		SelectionKey key = this.channel.keyFor(this.nioEngineImp.getSelector());
 		
-		if(currentStateWrite == WRITING_DONE){
+		if(currentStateWrite == WRITING_DONE){	
 			if(listBuffer.size() > 0){
 				bufferWrite = listBuffer.get(0);
 				listBuffer.remove(0);
 				bufferWrite.position(0);
 				lengthBufferWrite.position(0);
-				System.out.println("bufferWrite.capacity() : "+bufferWrite.capacity());
 				lengthBufferWrite.putInt(bufferWrite.capacity());
 				lengthBufferWrite.position(0);
 				currentStateWrite = WRITING_LENGTH;
@@ -227,19 +226,19 @@ public class NioChannelImp extends NioChannel{
 				currentStateWrite = WRITING_MSG;
 			}
 
-		} else if(currentStateWrite == WRITING_MSG){
+		} if(currentStateWrite == WRITING_MSG){
 
-			if(lengthBufferWrite.remaining() > 0){
+			if(bufferWrite.remaining() > 0){
 
 				try{
-					channel.write(lengthBufferWrite);
+					channel.write(bufferWrite);
 				}catch(IOException e){
 					key.cancel(); 
 					channel.close(); 
 				}
 			}
 
-			if(lengthBufferWrite.remaining() == 0){
+			if(bufferWrite.remaining() == 0){
 				currentStateWrite = WRITING_DONE;
 			}
 

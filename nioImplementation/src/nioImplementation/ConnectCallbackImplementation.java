@@ -20,9 +20,9 @@ public class ConnectCallbackImplementation implements ConnectCallback{
 	public void connected(NioChannel nioChannel) {
 		//System.out.println("in connected");
 		System.out.println("Connected to : " + nioChannel.getRemoteAddress());
-		String message = "ping pong V1.0";
+		//String message = "ping pong allezzzzz!";
 		//we send the message
-		nioChannel.send(message.getBytes(), 0, message.getBytes().length);
+		//nioChannel.send(message.getBytes(), 0, message.getBytes().length);
 	}
 
 }

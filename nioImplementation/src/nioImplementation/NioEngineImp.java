@@ -108,16 +108,12 @@ public class NioEngineImp extends NioEngine{
 						System.out.println("The key is not valid");
 						continue;
 					} else if (key.isConnectable()) {
-						System.out.println("connect");
 						handleConnection(key);
 					} else if (key.isReadable()) {
-						System.out.println("read");
 						handleRead(key);
 					} else if (key.isWritable()) {
-						System.out.println("write");
 						handleWrite(key);
 					} else if (key.isAcceptable()) {
-						System.out.println("accept");
 						handleAccept(key);
 					} else {
 						System.out.println("Unknown key");
@@ -140,7 +136,6 @@ public class NioEngineImp extends NioEngine{
 	 */
 	public void handleAccept(SelectionKey key){
 		SocketChannel socketChannel = null;
-		System.out.println("debut handleAccept");
 		ServerSocketChannel serverSocketChannel = (ServerSocketChannel) key.channel();
 		try {
 			socketChannel = serverSocketChannel.accept();
@@ -154,7 +149,6 @@ public class NioEngineImp extends NioEngine{
 
 			nioChannels.put(socketChannel,nioChannel);
 			acceptCallback.accepted(nioServers.get(serverSocketChannel), nioChannel);
-			System.out.println("fin handleAccept");
 
 
 		} catch (IOException e) {
@@ -181,15 +175,6 @@ public class NioEngineImp extends NioEngine{
 
 
 	public void handleWrite(SelectionKey key) throws IOException{
-		/*SocketChannel socketChannel = (SocketChannel) key.channel();
-		try {
-			this.nioChannels.get(socketChannel).write();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			NioEngine.panic("error in handleWrite");
-		}*/
-
 		SocketChannel socketChannel = (SocketChannel) key.channel();
 		NioChannelImp nc = this.nioChannels.get(socketChannel);
 		//finish = true if we don't have anything to write
@@ -212,7 +197,6 @@ public class NioEngineImp extends NioEngine{
 	 */
 	public void handleConnection(SelectionKey key){
 		SocketChannel sc = (SocketChannel) key.channel();
-		System.out.println("debut handleConenction");
 
 		try {
 			sc.finishConnect();
@@ -227,7 +211,6 @@ public class NioEngineImp extends NioEngine{
 		NioChannelImp nioChannel = new NioChannelImp(sc, this);
 		nioChannels.put(sc, nioChannel);
 		nioChannelCallback.get(sc).connected(nioChannel);
-		System.out.println("fin handleConnection");
 
 	}
 
