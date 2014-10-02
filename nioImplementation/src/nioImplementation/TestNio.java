@@ -2,6 +2,7 @@ package nioImplementation;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.Scanner;
 
 import nio.engine.AcceptCallback;
 import nio.engine.ConnectCallback;
@@ -62,9 +63,15 @@ public class TestNio {
 	}
 
 	public static void main(String args[]){
+		
+		Scanner portServer = new Scanner(System.in);
+		System.out.println("Veuillez saisir le port du server :");
+		final String str = portServer.nextLine();
+		System.out.println("Vous avez saisi : " + str);
+		
 		new Thread(new Runnable() {
 			public void run() {
-				server(3334);
+				server(Integer.parseInt(str));
 			}
 		}).start();
 
@@ -75,16 +82,14 @@ public class TestNio {
 			System.exit(1);
 		}
 
+		Scanner newPort = new Scanner(System.in);
+		System.out.println("Veuillez saisir le port du/des client(s) :");
+		final String str2 = newPort.nextLine();
+		System.out.println("Vous avez saisi : " + str2);
 
 		new Thread(new Runnable() {
 			public void run() {
-				client(3334);
-			}
-		}).start();
-		
-		new Thread(new Runnable() {
-			public void run() {
-				client(3334);
+				client(Integer.parseInt(str2));
 			}
 		}).start();
 	}
