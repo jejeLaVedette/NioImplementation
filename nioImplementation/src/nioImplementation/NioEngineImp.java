@@ -68,7 +68,6 @@ public class NioEngineImp extends NioEngine{
                 System.out.println("impossible de se connecter avec le port : "+portTest);
                 isConnected = false;
             }
-            System.out.println(i);
             i++;
         }
         if (isConnected){
