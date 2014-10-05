@@ -11,7 +11,7 @@ import nio.engine.NioEngine;
 
 /**
  * Class for the test of ping-pong
- * @author Jérôme
+ * @author JÃ©rÃ´me
  *
  */
 public class TestNio {
@@ -51,7 +51,7 @@ public class TestNio {
 		try {
 			nioEngine.connect(InetAddress.getByName("localhost"), port, cc);
 		} catch (IOException e) {
-			NioEngine.panic("Error during the conenction attempt of the client");
+			NioEngine.panic("Error during the connection attempt of the client");
 		}
 
 		System.out.println("client launch");

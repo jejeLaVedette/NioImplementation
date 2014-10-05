@@ -2,7 +2,7 @@ package nioImplementation;
 
 /**
  * 
- * @author Jérôme
+ * @author JÃ©rÃ´me
  *
  */
 public enum State {

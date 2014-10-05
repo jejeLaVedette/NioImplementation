@@ -7,7 +7,7 @@ import nio.engine.NioChannel;
 
 /**
  * 
- * @author Jérôme
+ * @author JÃ©rÃ´me
  *
  */
 

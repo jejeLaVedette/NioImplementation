@@ -13,7 +13,7 @@ import nio.engine.NioEngine;
 
 /**
  * 
- * @author Jérôme
+ * @author JÃ©rÃ´me
  *
  */
 

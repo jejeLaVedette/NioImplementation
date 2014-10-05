@@ -1,5 +1,5 @@
-#ignore les .class
-*.class
+#ignore le dossier de compilation
+bin
 #ignore la génération des fichiers de conf de intellij
 .idea
 *.iml

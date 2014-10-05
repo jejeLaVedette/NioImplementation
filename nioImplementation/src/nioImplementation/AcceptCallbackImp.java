@@ -6,7 +6,7 @@ import nio.engine.NioServer;
 
 /**
  * 
- * @author Jérôme
+ * @author JÃ©rÃ´me
  *
  */
 

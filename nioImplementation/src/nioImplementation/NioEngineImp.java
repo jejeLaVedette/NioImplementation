@@ -22,7 +22,7 @@ import nio.engine.NioServer;
 /**
  * This class will listen incoming connection
  * and connect to remote ports
- * @author Jérôme
+ * @author JÃ©rÃ´me
  *
  */
 
@@ -193,7 +193,7 @@ public class NioEngineImp extends NioEngine{
 
 	/**
 	 * Finish to establish a connection
-	 * @param the key of the channel on which a connection is requested
+	 * @param key of the channel on which a connection is requested
 	 */
 	public void handleConnection(SelectionKey key){
 		SocketChannel sc = (SocketChannel) key.channel();

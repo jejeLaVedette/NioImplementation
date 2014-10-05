@@ -7,7 +7,7 @@ import nio.engine.AcceptCallback;
 import nio.engine.NioServer;
 
 /**+ * 
- * @author Jérôme
+ * @author JÃ©rÃ´me
  *
  */
 public class NioServerImp extends NioServer{
