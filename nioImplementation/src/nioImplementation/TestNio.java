@@ -38,7 +38,7 @@ public class TestNio {
 
 	}
 
-	public static void client(int port){
+	public static void client(){
 		NioEngineImp nioEngine = null;
 		ConnectCallback cc = new ConnectCallbackImplementation(); 
 
@@ -49,7 +49,7 @@ public class TestNio {
 		}
 
 		try {
-			nioEngine.connect(InetAddress.getByName("localhost"), port, cc);
+			nioEngine.connect(InetAddress.getByName("localhost"), cc);
 		} catch (IOException e) {
 			NioEngine.panic("Error during the connection attempt of the client");
 		}
@@ -82,14 +82,14 @@ public class TestNio {
 			System.exit(1);
 		}
 
-		Scanner newPort = new Scanner(System.in);
-		System.out.println("Veuillez saisir le port du/des client(s) :");
-		final String str2 = newPort.nextLine();
-		System.out.println("Vous avez saisi : " + str2);
+//		Scanner newPort = new Scanner(System.in);
+//		System.out.println("Veuillez saisir le port du/des client(s) :");
+//		final String str2 = newPort.nextLine();
+//		System.out.println("Vous avez saisi : " + str2);
 
 		new Thread(new Runnable() {
 			public void run() {
-				client(Integer.parseInt(str2));
+				client();
 			}
 		}).start();
 	}
