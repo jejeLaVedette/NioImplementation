@@ -7,6 +7,7 @@ import java.util.Scanner;
 import nio.engine.AcceptCallback;
 import nio.engine.ConnectCallback;
 import nio.engine.NioEngine;
+import nio.engine.NioServer;
 
 
 /**
@@ -15,7 +16,7 @@ import nio.engine.NioEngine;
  *
  */
 public class TestNio {
-	public static void server(int port){
+	public static void server(){
 		NioEngineImp nioEngine = null;
 		AcceptCallback acImp = new AcceptCallbackImp();
 
@@ -25,11 +26,11 @@ public class TestNio {
 			NioEngine.panic("Error during the creation of the server");
 		}
 
-		try {  
-			nioEngine.listen(port, acImp);
-		} catch (IOException e) {
-			NioEngine.panic("Error during the listening of the server");
-		}
+        NioServer server = nioEngine.listen(acImp);
+        if(server == null){
+            NioEngine.panic("creation server failed");
+            System.exit(-1);
+        }
 
 		System.out.println("server launch");
 		nioEngine.mainloop();
@@ -64,14 +65,14 @@ public class TestNio {
 
 	public static void main(String args[]){
 		
-		Scanner portServer = new Scanner(System.in);
-		System.out.println("Veuillez saisir le port du server :");
-		final String str = portServer.nextLine();
-		System.out.println("Vous avez saisi : " + str);
+//		Scanner portServer = new Scanner(System.in);
+//		System.out.println("Veuillez saisir le port du server :");
+//		final String str = portServer.nextLine();
+//		System.out.println("Vous avez saisi : " + str);
 		
 		new Thread(new Runnable() {
 			public void run() {
-				server(Integer.parseInt(str));
+				server();
 			}
 		}).start();
 

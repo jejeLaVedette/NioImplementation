@@ -64,14 +64,12 @@ public class NioEngineImp extends NioEngine{
             try{
                 connect(address, portTest, cc);
                 isConnected = true;
+                this.port = portTest;
             } catch (IOException ex){
                 System.out.println("impossible de se connecter avec le port : "+portTest);
                 isConnected = false;
             }
             i++;
-        }
-        if (isConnected){
-            this.port = portTest;
         }
     }
 
@@ -96,6 +94,7 @@ public class NioEngineImp extends NioEngine{
 
         while (selectedKeys.hasNext()) {
             SelectionKey key = (SelectionKey) selectedKeys.next();
+            selectedKeys.remove();
             if (key.isConnectable()) {
                 System.out.println("test connexion");
                 handleConnection(key);
@@ -105,10 +104,32 @@ public class NioEngineImp extends NioEngine{
 
 	}
 
+    public NioServer listen(AcceptCallback cc){
+        int portTest = portBegin;
+        int i = 0;
+        boolean isListeaning = false;
+        NioServer server = null;
+
+        while((portTest < portBegin + portMargin)&&(!isListeaning)){
+            portTest = portBegin + i;
+            try{
+                server = listen(portTest, cc);
+                isListeaning = true;
+                this.port = portTest;
+            } catch (IOException ex){
+                System.out.println("impossible de se connecter avec le port : "+portTest);
+                isListeaning = false;
+            }
+            i++;
+        }
+
+        return server;
+    }
+
 	@Override
 	public NioServer listen(int port, AcceptCallback ac) throws IOException{
 
-		NioServerImp server = null;
+		NioServer server;
 
 
 		ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
@@ -143,7 +164,6 @@ public class NioEngineImp extends NioEngine{
 
 					if (!key.isValid()) {
 						System.out.println("The key is not valid");
-						continue;
 					} else if (key.isConnectable()) {
 						handleConnection(key);
 					} else if (key.isReadable()) {
