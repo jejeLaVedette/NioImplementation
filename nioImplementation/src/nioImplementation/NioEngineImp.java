@@ -3,7 +3,6 @@ package nioImplementation;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectionKey;
@@ -11,11 +10,13 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
 import nio.engine.AcceptCallback;
 import nio.engine.ConnectCallback;
+import nio.engine.NioChannel;
 import nio.engine.NioEngine;
 import nio.engine.NioServer;
 
@@ -37,6 +38,8 @@ public class NioEngineImp extends NioEngine{
 	HashMap<ServerSocketChannel, NioServer> nioServers;
 	HashMap<SocketChannel, NioChannelImp> nioChannels;
 	HashMap<SocketChannel, ConnectCallback> nioChannelCallback;
+    ArrayList<NioChannel> listClientChannel = new ArrayList<NioChannel>();
+
 
 	/* Variable de l'automate */
 	State readState = State.READING_LENGTH;
