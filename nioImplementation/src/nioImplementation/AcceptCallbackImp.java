@@ -16,6 +16,7 @@ public class AcceptCallbackImp implements AcceptCallback {
 	public void accepted(NioServer ns, NioChannel nc) {
 		// TODO Auto-generated method stub
 		System.out.println("Succesfully connected to the server on the port : "+ns.getPort());
+		//faire l'ajout dans la liste ici.
 		
 	}
  
