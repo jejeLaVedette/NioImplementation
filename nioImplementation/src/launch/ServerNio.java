@@ -1,13 +1,16 @@
 package launch;
 
+import java.util.ArrayList;
+
 import nio.engine.AcceptCallback;
+import nio.engine.NioChannel;
 import nio.engine.NioEngine;
 import nio.engine.NioServer;
 import nioImplementation.AcceptCallbackImp;
 import nioImplementation.NioEngineImp;
 
 public class ServerNio implements Runnable{
-
+			
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
@@ -28,7 +31,6 @@ public class ServerNio implements Runnable{
 
 		System.out.println("server launch");
 		nioEngine.mainloop();
-		System.out.println("server after mainloop");
 	}
 
 }

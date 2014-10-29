@@ -5,7 +5,7 @@ import nio.engine.NioChannel;
 
 /**
  * 
- * @author Jérôme
+ * @author Jerome
  *
  */
 
@@ -18,7 +18,6 @@ public class ConnectCallbackImplementation implements ConnectCallback{
 
 	@Override
 	public void connected(NioChannel nioChannel) {
-		//System.out.println("in connected");
 		System.out.println("Connected to : " + nioChannel.getRemoteAddress());
 		String message = "ping pong allezzzzz!";
 		//we send the message

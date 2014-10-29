@@ -30,5 +30,13 @@ public class TestNio {
 //		System.out.println("Vous avez saisi : " + str2);
 		
 		new Thread(new ClientNio()).start();
+
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+		new Thread(new ClientNio()).start();
 	}
 }
