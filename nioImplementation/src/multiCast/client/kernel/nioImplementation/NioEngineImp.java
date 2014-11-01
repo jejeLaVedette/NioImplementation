@@ -1,23 +1,17 @@
-package nioImplementation;
-
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.UnknownHostException;
-import java.nio.ByteBuffer;
-import java.nio.channels.ClosedChannelException;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
-import java.nio.channels.ServerSocketChannel;
-import java.nio.channels.SocketChannel;
-import java.nio.channels.spi.SelectorProvider;
-import java.util.HashMap;
-import java.util.Iterator;
+package multiCast.client.kernel.nioImplementation;
 
 import nio.engine.AcceptCallback;
 import nio.engine.ConnectCallback;
 import nio.engine.NioEngine;
 import nio.engine.NioServer;
+
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.nio.channels.*;
+import java.nio.channels.spi.SelectorProvider;
+import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  * This class will listen incoming connection
@@ -33,19 +27,15 @@ public class NioEngineImp extends NioEngine{
     private final int portMargin;
     private int port;
 
-	HashMap<SocketChannel, ByteBuffer> lengthBuffersWrite;	
-	HashMap<ServerSocketChannel, NioServer> nioServers;
-	HashMap<SocketChannel, NioChannelImp> nioChannels;
-	HashMap<SocketChannel, ConnectCallback> nioChannelCallback;
+	private HashMap<ServerSocketChannel, NioServer> nioServers;
+	private HashMap<SocketChannel, NioChannelImp> nioChannels;
+	private HashMap<SocketChannel, ConnectCallback> nioChannelCallback;
 
-	/* Variable de l'automate */
-	State readState = State.READING_LENGTH;
-	State writeState = State.WRITING_LENGTH;
 
 	public NioEngineImp() throws Exception {
 		//we create the selector
 		selector = SelectorProvider.provider().openSelector();
-		//we keep the link between SC and server
+		//we keep the link between SC and multiCast.server
 		nioServers= new HashMap<ServerSocketChannel, NioServer>();
 		//we keep the link between SC and channel
 		nioChannels= new HashMap<SocketChannel, NioChannelImp>();
@@ -83,7 +73,7 @@ public class NioEngineImp extends NioEngine{
 		socketChannel.configureBlocking(false);
 
 		socketChannel.register(selector, SelectionKey.OP_CONNECT);
-		//and we "try" to connect 
+		//and we "try" to connect
 		socketChannel.connect(new InetSocketAddress(address, port));
 
 		nioChannelCallback.put(socketChannel, cc);
@@ -140,7 +130,7 @@ public class NioEngineImp extends NioEngine{
 
 		//will notify when there is incoming data
 		serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
-		//we fix the server with the AC and the SC
+		//we fix the multiCast.server with the AC and the SC
 		server = new NioServerImp(serverSocketChannel, ac);
 		// store it
 		nioServers.put(serverSocketChannel, server);
@@ -223,7 +213,6 @@ public class NioEngineImp extends NioEngine{
 		try {
 			this.nioChannels.get(socketChannel).read();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			NioEngine.panic("error in handleRead");
 		}
@@ -236,13 +225,12 @@ public class NioEngineImp extends NioEngine{
 		NioChannelImp nc = this.nioChannels.get(socketChannel);
 		//finish = true if we don't have anything to write
 		boolean finish = nc.write();
-		
+
 		if (finish) key.interestOps(key.interestOps() & ~SelectionKey.OP_WRITE);
 
 		try {
 			nc.write();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -252,25 +240,6 @@ public class NioEngineImp extends NioEngine{
 	 * Finish to establish a connection
 	 * @param key of the channel on which a connection is requested
 	 */
-//	public void handleConnection(SelectionKey key){
-//		SocketChannel sc = (SocketChannel) key.channel();
-//
-//		try {
-//			sc.finishConnect();
-//		} catch (IOException e) {
-//			// cancel the channel's registration with our selector
-//			System.out.println(e);
-//			key.cancel();
-//			return;
-//		}
-//		key.interestOps(SelectionKey.OP_READ);
-//
-//		NioChannelImp nioChannel = new NioChannelImp(sc, this);
-//		nioChannels.put(sc, nioChannel);
-//		nioChannelCallback.get(sc).connected(nioChannel);
-//
-//	}
-
     public void handleConnection(SelectionKey key) throws IOException {
         SocketChannel sc = (SocketChannel) key.channel();
         sc.finishConnect();

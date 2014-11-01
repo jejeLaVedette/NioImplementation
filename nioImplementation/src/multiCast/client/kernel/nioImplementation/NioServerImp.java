@@ -1,10 +1,10 @@
-package nioImplementation;
-
-import java.io.IOException;
-import java.nio.channels.ServerSocketChannel;
+package multiCast.client.kernel.nioImplementation;
 
 import nio.engine.AcceptCallback;
 import nio.engine.NioServer;
+
+import java.io.IOException;
+import java.nio.channels.ServerSocketChannel;
 
 /**+ * 
  * @author Jérôme
@@ -26,7 +26,6 @@ public class NioServerImp extends NioServer{
 	
 	@Override
 	public void close() {
-		// TODO Auto-generated method stub
 		try {
 			serverSocketChannel.close();
 		} catch (IOException e) {
@@ -37,12 +36,10 @@ public class NioServerImp extends NioServer{
 
 	@Override
 	public int getPort() {
-		// TODO Auto-generated method stub
 		return serverSocketChannel.socket().getLocalPort();
 	}
 
 	public AcceptCallback getCallback() {
-		// TODO Auto-generated method stub
 		return acceptCallback;
 	}
 

@@ -1,9 +1,11 @@
-package nioImplementation;
+package multiCast;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.util.Scanner;
 
+import multiCast.nioImplementation.AcceptCallbackImp;
+import multiCast.nioImplementation.ConnectCallbackImp;
+import multiCast.nioImplementation.NioEngineImp;
 import nio.engine.AcceptCallback;
 import nio.engine.ConnectCallback;
 import nio.engine.NioEngine;
@@ -41,7 +43,7 @@ public class TestNio {
 
 	public static void client(){
 		NioEngineImp nioEngine = null;
-		ConnectCallback cc = new ConnectCallbackImplementation(); 
+		ConnectCallback cc = new ConnectCallbackImp();
 
 		try{
 			nioEngine = new NioEngineImp();

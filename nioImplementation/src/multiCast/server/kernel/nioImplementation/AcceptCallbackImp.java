@@ -1,4 +1,4 @@
-package nioImplementation;
+package multiCast.server.kernel.nioImplementation;
 
 import nio.engine.AcceptCallback;
 import nio.engine.NioChannel;
@@ -15,7 +15,7 @@ public class AcceptCallbackImp implements AcceptCallback {
 	@Override
 	public void accepted(NioServer ns, NioChannel nc) {
 		// TODO Auto-generated method stub
-		System.out.println("Succesfully connected to the server on the port : "+ns.getPort());
+		System.out.println("Succesfully connected to the multiCast.server on the port : "+ns.getPort());
 		
 	}
  

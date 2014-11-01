@@ -1,4 +1,4 @@
-package nioImplementation;
+package multiCast.server.kernel.nioImplementation;
 
 import nio.engine.ConnectCallback;
 import nio.engine.NioChannel;
@@ -9,7 +9,7 @@ import nio.engine.NioChannel;
  *
  */
 
-public class ConnectCallbackImplementation implements ConnectCallback{
+public class ConnectCallbackImp implements ConnectCallback{
 
 	@Override
 	public void closed(NioChannel nioChannel) {

@@ -132,7 +132,7 @@ public abstract class NioEngine {
    * calling the given callback when a connection has been accepted.
    * @param port
    * @param callback
-   * @return an NioServer wrapping the server port accepting connections.
+   * @return an NioServer wrapping the multiCast.server port accepting connections.
    * @throws IOException if the port is already used or can't be bound.
    */
   public abstract NioServer listen(int port, AcceptCallback callback) throws IOException;
