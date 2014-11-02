@@ -13,19 +13,24 @@ import java.util.HashMap;
 /**
  * Created by augustin on 30/10/14.
  */
-public class Client extends EntitiesClientImpl implements Runnable{
+public class Client extends NioEngineImp implements Runnable{
 	
-    public Client(int identity, int clock) {
-		super(identity, clock);
+	private int identity;
+	private int clock;
+	
+    public Client(int identity, int clock) throws Exception{
+		//super(identity, clock);
 		// TODO Auto-generated constructor stub
-	}
+    	this.identity=identity;
+    	this.clock=clock;
+    }
 
 	private NioEngineImp nioEngine;
 
     public void run() {
 
 		try{
-			System.out.println();
+			System.out.println("in run");
 			nioEngine = new NioEngineImp();
 		}catch (Exception e) {
 			NioEngine.panic("Error during the creation of the client");

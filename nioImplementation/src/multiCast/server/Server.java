@@ -44,7 +44,6 @@ public class Server extends Entities implements Runnable{
             System.exit(-1);
         }
 
-        System.out.println("server launch");
         nioEngine.mainloop();
     }
 

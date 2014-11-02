@@ -19,13 +19,14 @@ public class ServerAcceptCallbackImp implements AcceptCallback {
 
 	public ServerAcceptCallbackImp(Server server) {
 		this.server = server; 
+		System.out.println("Server accepteCB : "+server);
 	}
 
 	@Override
 	public void accepted(NioServer ns, NioChannel nc) {
 		System.out.println("Succesfully connected to the server on the port : "+ns.getPort());
 		server.getClientList().add(nc);
-
+		System.out.println("Server : taille liste = "+server.getClientList().size());
 	}
 
 	@Override 
