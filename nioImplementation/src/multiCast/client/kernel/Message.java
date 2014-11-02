@@ -30,8 +30,8 @@ public class Message {
         return this.identity;
     }
 
-    public void receiveACK(int entity){
-        this.ack[entity] = true;
+    public void receiveACK(int identityACK){
+        this.ack[identityACK] = true;
     }
 
     public boolean receveidAllACK(){
