@@ -1,9 +1,12 @@
 package multiCast.client.kernel;
 
 import multiCast.Entities;
+import nio.engine.NioChannel;
 import nio.engine.NioEngine;
 
+import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by augustin on 02/11/14.
@@ -11,12 +14,15 @@ import java.util.ArrayList;
 public class EntitiesClientImpl extends Entities{
     private ArrayList<Message> messageList;
     private ArrayList<ACK> bufferACKList;
-
+    //client list
+	private ArrayList<NioChannel> clientList;
+	
     public EntitiesClientImpl(int identity, int clock){
         this.identity = identity;
         this.clock = clock;
         this.messageList = new ArrayList<>();
         this.bufferACKList = new ArrayList<>();
+        this.clientList = new ArrayList<NioChannel>();
     }
 
     public void putMessage(Message message){
@@ -91,7 +97,18 @@ public class EntitiesClientImpl extends Entities{
     }
 
     public int getClock(){
-        return this.clock;
+        return this.identity;
     }
-
+    
+    public void sendACKToEveryBody(String m){
+        String data = "[ack]["+this.identity+"]["+this.identity+"]"+m;
+        for(int i = 0; i < clientList.size(); i++){
+        	clientList.get(i).send(m.getBytes(), 0, m.getBytes().length);
+		}
+    }
+    
+	public ArrayList<NioChannel> getClientList(){
+		return this.clientList;
+	}
+	
 }

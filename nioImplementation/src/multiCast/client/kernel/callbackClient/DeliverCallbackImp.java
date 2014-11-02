@@ -38,7 +38,7 @@ public class DeliverCallbackImp implements DeliverCallback{
             Message message = new Message(clock, identity, data, 5);
             entities.putMessage(message);
             entities.updateClock(clock);
-            sendACKToEveryBody(m);
+            entities.sendACKToEveryBody(m);
 
         }
 
@@ -46,9 +46,9 @@ public class DeliverCallbackImp implements DeliverCallback{
 
 	}
 
-    private void sendACKToEveryBody(String m){
+    /*private void sendACKToEveryBody(String m){
         String data = "[ack]["+entities.getIdentity()+"]["+entities.getClock()+"]"+m;
-    }
+    }*/
 
     private String extractData(String m){
         String data = "";
