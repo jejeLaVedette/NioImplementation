@@ -2,11 +2,8 @@ package multiCast.client.kernel;
 
 import multiCast.Entities;
 import nio.engine.NioChannel;
-import nio.engine.NioEngine;
 
-import java.net.InetAddress;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by augustin on 02/11/14.
@@ -22,7 +19,7 @@ public class EntitiesClientImpl extends Entities{
         this.clock = clock;
         this.messageList = new ArrayList<>();
         this.bufferACKList = new ArrayList<>();
-        this.clientList = new ArrayList<NioChannel>();
+        this.clientList = new ArrayList<>();
     }
 
     public void putMessage(Message message){
@@ -83,8 +80,6 @@ public class EntitiesClientImpl extends Entities{
         }
 
         if(i == size){
-            NioEngine.panic("we receive an ack, but we didn't receive the message. " +
-                    "The ack is put in an other list to wait the message");
             ACK ack = new ACK(identityMessage, identityACK, clockMessage);
             this.bufferACKList.add(ack);
         } else {
