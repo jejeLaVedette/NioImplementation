@@ -13,7 +13,7 @@ public abstract class NioServer {
   public abstract int getPort();
     
   /**
-   * Close the server port, no longer accepting connections.
+   * Close the multiCast.server port, no longer accepting connections.
    */
   public abstract void close();
 

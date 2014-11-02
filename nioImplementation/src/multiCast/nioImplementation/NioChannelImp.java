@@ -1,4 +1,9 @@
-package nioImplementation;
+package multiCast.nioImplementation;
+
+import multiCast.client.kernel.callbackClient.DeliverCallbackImp;
+import nio.engine.DeliverCallback;
+import nio.engine.NioChannel;
+import nio.engine.NioEngine;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -6,10 +11,6 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
-
-import nio.engine.DeliverCallback;
-import nio.engine.NioChannel;
-import nio.engine.NioEngine;
 
 /**
  * 
@@ -52,13 +53,12 @@ public class NioChannelImp extends NioChannel{
 	
 
 	public NioChannelImp(SocketChannel socketChannel, NioEngineImp nioEngineImp) {
-		// TODO Auto-generated constructor stub
 		this.channel = socketChannel;
 		this.nioEngineImp = nioEngineImp;
 		listBuffer = new ArrayList<ByteBuffer>();
 		lengthBufferRead = ByteBuffer.allocate(4);
 		lengthBufferWrite = ByteBuffer.allocate(4);
-		callback = new DeliverCallbackImp(); 
+		callback = new DeliverCallbackImp();
 	}
 	
 
@@ -100,15 +100,12 @@ public class NioChannelImp extends NioChannel{
 
 	@Override
 	public void send(ByteBuffer buffer) {
-		// TODO Auto-generated method stub
 		listBuffer.add(buffer);
 		nioEngineImp.wantToWrite(this);
 	}
 
 	@Override
 	public void send(byte[] bytes, int offset, int length) {
-		// TODO Auto-generated method stub
-
 		ByteBuffer buff = ByteBuffer.allocate(length);
 		while (length != 0 ){
 			buff.put(bytes[offset]);
@@ -120,20 +117,17 @@ public class NioChannelImp extends NioChannel{
 
 	@Override
 	public void setDeliverCallback(DeliverCallback dc) {
-		// TODO Auto-generated method stub
 		this.callback = dc;
 	}
 
 
 	public void read() throws IOException {
-		// TODO Auto-generated method stub
-
 		//we need to get the current key about our channel
 		//The key returned when this channel was last registered with the given selector, or null if this channel is not 
 		//currently registered with that selector 
 		SelectionKey key = this.channel.keyFor(this.nioEngineImp.getSelector());
 		lengthBufferRead.clear();
-		int nb = 0;
+		int nb;
 		
 		if(currentStateRead == READING_DONE){
 			bufferRead = null;
@@ -197,7 +191,6 @@ public class NioChannelImp extends NioChannel{
 	}
 
 	public boolean write() throws IOException {
-		// TODO Auto-generated method stub
 		SelectionKey key = this.channel.keyFor(this.nioEngineImp.getSelector());
 		
 		if(currentStateWrite == WRITING_DONE){	
