@@ -14,7 +14,7 @@ import java.util.HashMap;
 /**
  * Created by augustin on 30/10/14.
  */
-public class Server extends Entities{
+public class Server extends Entities implements Runnable{
 	
 	private ArrayList<NioChannel> clientList;
 	private int maxClientRoom;

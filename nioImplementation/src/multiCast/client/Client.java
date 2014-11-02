@@ -1,6 +1,7 @@
 package multiCast.client;
 
 import multiCast.Entities;
+import multiCast.client.kernel.EntitiesClientImpl;
 import multiCast.nioImplementation.ConnectCallbackImp;
 import multiCast.nioImplementation.NioEngineImp;
 import nio.engine.NioEngine;
@@ -12,19 +13,19 @@ import java.util.HashMap;
 /**
  * Created by augustin on 30/10/14.
  */
-public class Client extends Entities{
-    private NioEngineImp nioEngine;
+public class Client extends EntitiesClientImpl implements Runnable{
+	
+    public Client(int identity, int clock) {
+		super(identity, clock);
+		// TODO Auto-generated constructor stub
+	}
 
-    public Client(int identity){
-        this.identity = identity;
-        this.clock = 0;
-        this.addressHashMap = new HashMap<String, InetAddress>();
-        this.integerHashMap = new HashMap<String, Integer>();
-    }
+	private NioEngineImp nioEngine;
 
     public void run() {
 
 		try{
+			System.out.println();
 			nioEngine = new NioEngineImp();
 		}catch (Exception e) {
 			NioEngine.panic("Error during the creation of the client");
