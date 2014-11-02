@@ -1,5 +1,7 @@
 package multiCast.client.gui;
 
+import multiCast.client.kernel.EntitiesClientImpl;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -12,6 +14,7 @@ public class BarPanel extends JPanel{
     private JButton submit;
     private JButton burst;
     private JTextField textArea;
+    private EntitiesClientImpl client;
 
     public BarPanel(){
 
@@ -35,8 +38,7 @@ public class BarPanel extends JPanel{
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            //TODO faire le lien avec nio
-            System.out.println(textArea.getText());
+            client.sendMessageToEveryBody(textArea.getText());
             textArea.setText("");
         }
     }

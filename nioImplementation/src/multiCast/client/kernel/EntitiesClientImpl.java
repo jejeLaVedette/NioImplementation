@@ -101,6 +101,14 @@ public class EntitiesClientImpl extends Entities{
         	clientList.get(i).send(m.getBytes(), 0, m.getBytes().length);
 		}
     }
+
+    public void sendMessageToEveryBody(String data){
+        String message = "["+this.identity+"]["+this.clock+"]"+data;
+        byte[] b = message.getBytes();
+        for(NioChannel channel : this.clientList){
+            channel.send(b ,0 , b.length);
+        }
+    }
     
 	public ArrayList<NioChannel> getClientList(){
 		return this.clientList;
