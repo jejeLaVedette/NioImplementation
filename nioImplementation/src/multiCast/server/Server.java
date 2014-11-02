@@ -1,8 +1,8 @@
 package multiCast.server;
 
 import multiCast.Entities;
-import multiCast.server.kernel.nioImplementation.AcceptCallbackImp;
-import multiCast.server.kernel.nioImplementation.NioEngineImp;
+import multiCast.server.kernel.callbackServer.ServerAcceptCallbackImp;
+import multiCast.server.kernel.nioServer.NioEngineImp;
 import nio.engine.NioEngine;
 import nio.engine.NioServer;
 
@@ -12,11 +12,11 @@ import java.util.HashMap;
 /**
  * Created by augustin on 30/10/14.
  */
-public class Server extends Entities {
+public class Server extends Entities{
 
     public Server(int identity){
         this.identity = identity;
-        this.horloge = 0;
+        this.clock = 0;
         this.addressHashMap = new HashMap<String, InetAddress>();
         this.integerHashMap = new HashMap<String, Integer>();
     }
@@ -31,7 +31,7 @@ public class Server extends Entities {
             NioEngine.panic("Error during the creation of the server");
         }
 
-        NioServer server = nioEngine.listen(new AcceptCallbackImp());
+        NioServer server = nioEngine.listen(new ServerAcceptCallbackImp());
         if(server == null){
             NioEngine.panic("creation server failed");
             System.exit(-1);

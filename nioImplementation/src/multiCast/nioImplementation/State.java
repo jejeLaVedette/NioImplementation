@@ -1,4 +1,4 @@
-package multiCast.client.kernel.nioImplementation;
+package multiCast.nioImplementation;
 
 /**
  * 

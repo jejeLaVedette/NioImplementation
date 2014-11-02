@@ -1,4 +1,4 @@
-package multiCast.client.kernel.nioImplementation;
+package multiCast.nioImplementation;
 
 import nio.engine.ConnectCallback;
 import nio.engine.NioChannel;
