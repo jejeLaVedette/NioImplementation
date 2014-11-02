@@ -30,7 +30,6 @@ public class Client extends NioEngineImp implements Runnable{
     public void run() {
 
 		try{
-			System.out.println("in run");
 			nioEngine = new NioEngineImp();
 		}catch (Exception e) {
 			NioEngine.panic("Error during the creation of the client");

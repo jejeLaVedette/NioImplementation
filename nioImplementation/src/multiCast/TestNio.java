@@ -10,7 +10,7 @@ import multiCast.server.Server;
  */
 public class TestNio {
 
-	public static void main(String args[]){
+	public static void main(String args[]) throws Exception {
 
 		new Thread(new Server(1999)).start();
 

@@ -16,7 +16,7 @@ import java.util.Iterator;
 /**
  * This class will listen incoming connection
  * and connect to remote ports
- * @author Jérôme
+ * @author Jï¿½rï¿½me
  *
  */
 
@@ -32,18 +32,31 @@ public class NioEngineImp extends NioEngine{
 	private HashMap<SocketChannel, ConnectCallback> nioChannelCallback;
 
 
-	public NioEngineImp() throws Exception {
-		//we create the selector
-		selector = SelectorProvider.provider().openSelector();
-		//we keep the link between SC and multiCast.server
-		nioServers= new HashMap<ServerSocketChannel, NioServer>();
-		//we keep the link between SC and channel
-		nioChannels= new HashMap<SocketChannel, NioChannelImp>();
-		//we keep the link between SC and CB
-		nioChannelCallback = new HashMap<SocketChannel, ConnectCallback>();
+    public NioEngineImp() throws Exception {
+        //we create the selector
+        selector = SelectorProvider.provider().openSelector();
+        //we keep the link between SC and multiCast.server
+        nioServers= new HashMap<ServerSocketChannel, NioServer>();
+        //we keep the link between SC and channel
+        nioChannels= new HashMap<SocketChannel, NioChannelImp>();
+        //we keep the link between SC and CB
+        nioChannelCallback = new HashMap<SocketChannel, ConnectCallback>();
         portBegin = 6667;
         portMargin = 100;
-	}
+    }
+
+    public NioEngineImp(int portBegin, int portMargin) throws Exception {
+        //we create the selector
+        selector = SelectorProvider.provider().openSelector();
+        //we keep the link between SC and multiCast.server
+        nioServers= new HashMap<ServerSocketChannel, NioServer>();
+        //we keep the link between SC and channel
+        nioChannels= new HashMap<SocketChannel, NioChannelImp>();
+        //we keep the link between SC and CB
+        nioChannelCallback = new HashMap<SocketChannel, ConnectCallback>();
+        this.portBegin = portBegin;
+        this.portMargin=portMargin;
+    }
 
     public void connect(InetAddress address, ConnectCallback cc){
         int portTest = portBegin;

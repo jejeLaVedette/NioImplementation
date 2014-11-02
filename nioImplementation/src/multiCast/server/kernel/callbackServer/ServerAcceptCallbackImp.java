@@ -6,6 +6,8 @@ import nio.engine.AcceptCallback;
 import nio.engine.NioChannel;
 import nio.engine.NioServer;
 
+import java.io.IOException;
+
 /**
  * 
  * @author Jérôme
@@ -24,9 +26,19 @@ public class ServerAcceptCallbackImp implements AcceptCallback {
 
 	@Override
 	public void accepted(NioServer ns, NioChannel nc) {
-		System.out.println("Succesfully connected to the server on the port : "+ns.getPort());
-		server.getClientList().add(nc);
-		System.out.println("Server : taille liste = "+server.getClientList().size());
+        if(server.getClientList().size()<Server.getMaxClientRoom()){
+            try {
+                System.out.println("Server : connection accepted on port : "+ns.getPort() +" on channel :"+nc.getChannel().getRemoteAddress());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            server.getClientList().add(nc);
+            System.out.println("Server : taille liste = "+server.getClientList().size());
+
+            nc.setDeliverCallback(new ServerDeliverCallbackImp(server));
+
+        }
+
 	}
 
 	@Override 

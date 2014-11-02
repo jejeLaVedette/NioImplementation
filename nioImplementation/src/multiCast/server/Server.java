@@ -15,9 +15,9 @@ import java.util.HashMap;
  * Created by augustin on 30/10/14.
  */
 public class Server extends Entities implements Runnable{
-	
+
 	private ArrayList<NioChannel> clientList;
-	private int maxClientRoom;
+	private static int maxClientRoom;
 
     public Server(int identity){
         this.identity = identity;
@@ -33,7 +33,7 @@ public class Server extends Entities implements Runnable{
         NioEngineImp nioEngine = null;
 
         try{
-            nioEngine = new NioEngineImp();
+            nioEngine = new NioEngineImp(6668,3);
         }catch (Exception e) {
             NioEngine.panic("Error during the creation of the server");
         }
@@ -52,4 +52,8 @@ public class Server extends Entities implements Runnable{
 		// TODO Auto-generated method stub
 		return this.clientList;
 	}
+
+    public static int getMaxClientRoom() {
+        return maxClientRoom;
+    }
 }
