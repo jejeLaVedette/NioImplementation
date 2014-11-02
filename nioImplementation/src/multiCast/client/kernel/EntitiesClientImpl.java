@@ -1,7 +1,6 @@
 package multiCast.client.kernel;
 
 import multiCast.Entities;
-import nio.engine.NioEngine;
 
 import java.util.ArrayList;
 
@@ -77,8 +76,6 @@ public class EntitiesClientImpl extends Entities{
         }
 
         if(i == size){
-            NioEngine.panic("we receive an ack, but we didn't receive the message. " +
-                    "The ack is put in an other list to wait the message");
             ACK ack = new ACK(identityMessage, identityACK, clockMessage);
             this.bufferACKList.add(ack);
         } else {
