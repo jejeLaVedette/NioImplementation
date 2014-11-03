@@ -6,6 +6,7 @@ import multiCast.client.kernel.EntitiesClientImpl;
 import multiCast.client.kernel.Message;
 import multiCast.nioImplementation.ConnectCallbackImp;
 import multiCast.nioImplementation.NioEngineImp;
+import multiCast.server.kernel.callbackServer.ServerConnectCallbackImp;
 import nio.engine.NioChannel;
 import nio.engine.NioEngine;
 
@@ -28,7 +29,7 @@ public class Client extends NioEngineImp implements Runnable{
     private ArrayList<NioChannel> clientList;
 	
     public Client(int identity, int clock) throws Exception{
-		//super(identity, clock);
+		super(identity, clock);
 		// TODO Auto-generated constructor stub
     	this.identity=identity;
     	this.clock=clock;
@@ -48,7 +49,7 @@ public class Client extends NioEngineImp implements Runnable{
 		}
 
 		try {
-			nioEngine.connect(InetAddress.getByName("localhost"), new ConnectCallbackImp(this));
+			nioEngine.connect(InetAddress.getByName("localhost"), new ServerConnectCallbackImp(this));
 		} catch (IOException e) {
 			NioEngine.panic("Error during the connection attempt of the client");
 		}
@@ -93,7 +94,7 @@ public class Client extends NioEngineImp implements Runnable{
     }
 
     public void updateClock(int clockReceive){
-        this.clock = Math.max(this.clock, clockReceive) +1;
+        this.clock = Math.max(this.clock, clockReceive) + 1;
     }
 
     public void checkAndPrintMessage(){
@@ -129,7 +130,7 @@ public class Client extends NioEngineImp implements Runnable{
 
 
     public int getClock(){
-        return this.identity;
+        return this.clock;
     }
 
     public void sendACKToEveryBody(String m){

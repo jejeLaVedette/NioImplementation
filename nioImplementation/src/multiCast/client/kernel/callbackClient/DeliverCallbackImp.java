@@ -3,9 +3,12 @@ package multiCast.client.kernel.callbackClient;
 import multiCast.client.Client;
 import multiCast.client.kernel.EntitiesClientImpl;
 import multiCast.client.kernel.Message;
+import multiCast.server.kernel.callbackServer.ServerConnectCallbackImp;
 import nio.engine.DeliverCallback;
 import nio.engine.NioChannel;
 
+import java.io.IOException;
+import java.net.InetAddress;
 import java.nio.ByteBuffer;
 
 /**
@@ -17,22 +20,43 @@ import java.nio.ByteBuffer;
 public class DeliverCallbackImp implements DeliverCallback{
     private Client client;
 
+    public DeliverCallbackImp(Client client){
+        this.client=client;
+    }
+
 	@Override
-	public void deliver(NioChannel arg0, ByteBuffer arg1) {
+	public void deliver(NioChannel nc, ByteBuffer bb) {
 		//System.out.println("Message received from : " + arg0.getRemoteAddress() + " : " + new String(arg1.array()));
-        String m = new String(arg1.array());
+        String m = new String(bb.array());
+        String[] msg = m.split("\\[");
 
         if(m.contains("[ack]")){
             int clockACK = extractClockACK(m);
             int identityACK = extractIdentityACK(m);
-            int clockMessage = extractClockMessage(true ,m);
+            int clockMessage = extractClockMessage(true, m);
             int identityMessage = extractIdentityMessage(true ,m);
 
 
             client.updateClock(clockACK);
             client.receiveACK(identityMessage, identityACK, clockMessage);
             client.checkAndPrintMessage();
-        } else{
+        } else if(m.contains("[ADD")){ //le client sait que le server la add a la liste
+            //le client previent le server qu'il est pret à recevoir la liste complete
+            System.out.println("Client "+this.client.getIdentity() +" receove msg ADD");
+            String msgRetour = "[OKADD]";
+            nc.send(msgRetour.getBytes(), 0, msgRetour.getBytes().length);
+
+        } else if(m.contains("[LISTE]")) {
+            System.out.println("Client " + this.client.getIdentity() + " receive msg from server about complete liste");
+
+            try {
+                this.client.connect(InetAddress.getByName(msg[1]), new ServerConnectCallbackImp(client));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+        } else {
             String data = extractData(m);
             int clock = extractClockMessage(false, m);
             int identity = extractIdentityMessage(false, m);

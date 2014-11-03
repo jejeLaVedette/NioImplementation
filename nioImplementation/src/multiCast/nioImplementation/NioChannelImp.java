@@ -58,7 +58,6 @@ public class NioChannelImp extends NioChannel{
 		listBuffer = new ArrayList<ByteBuffer>();
 		lengthBufferRead = ByteBuffer.allocate(4);
 		lengthBufferWrite = ByteBuffer.allocate(4);
-		callback = new DeliverCallbackImp();
 	}
 	
 
@@ -211,7 +210,7 @@ public class NioChannelImp extends NioChannel{
 			try{
 				channel.write(lengthBufferWrite);
 			}catch(IOException e){
-				key.cancel(); 
+				key.cancel();
 				channel.close(); 
 			}
 
