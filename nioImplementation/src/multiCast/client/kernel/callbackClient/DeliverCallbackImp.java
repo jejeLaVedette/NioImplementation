@@ -28,7 +28,7 @@ public class DeliverCallbackImp implements DeliverCallback{
 	public void deliver(NioChannel nc, ByteBuffer bb) {
 		//System.out.println("Message received from : " + arg0.getRemoteAddress() + " : " + new String(arg1.array()));
         String m = new String(bb.array());
-        String[] msg = m.split("\\[");
+
 
         if(m.contains("[ack]")){
             int clockACK = extractClockACK(m);
@@ -48,9 +48,10 @@ public class DeliverCallbackImp implements DeliverCallback{
 
         } else if(m.contains("[LISTE]")) {
             System.out.println("Client " + this.client.getIdentity() + " receive msg from server about complete liste");
+            String msg = m.split("\\[")[2].split("\\]")[0];
 
             try {
-                this.client.connect(InetAddress.getByName(msg[1]), new ServerConnectCallbackImp(client));
+                this.client.connect(InetAddress.getByName(msg), new ServerConnectCallbackImp(client));
             } catch (IOException e) {
                 e.printStackTrace();
             }
