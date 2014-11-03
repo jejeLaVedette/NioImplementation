@@ -33,7 +33,7 @@ public class Server extends Entities implements Runnable{
         NioEngineImp nioEngine = null;
 
         try{
-            nioEngine = new NioEngineImp(6668,3);
+            nioEngine = new NioEngineImp();
         }catch (Exception e) {
             NioEngine.panic("Error during the creation of the server");
         }

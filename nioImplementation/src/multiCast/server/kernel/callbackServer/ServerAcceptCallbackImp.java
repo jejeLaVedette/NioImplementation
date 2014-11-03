@@ -20,18 +20,13 @@ public class ServerAcceptCallbackImp implements AcceptCallback {
 	private Server server;
 
 	public ServerAcceptCallbackImp(Server server) {
-		this.server = server; 
-		System.out.println("Server accepteCB : "+server);
+		this.server = server;
 	}
 
 	@Override
 	public void accepted(NioServer ns, NioChannel nc) {
         if(server.getClientList().size()<Server.getMaxClientRoom()){
-            try {
-                System.out.println("Server : connection accepted on port : "+ns.getPort() +" on channel :"+nc.getChannel().getRemoteAddress());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            System.out.println("Server : connection accepted on port : "+ns.getPort());
             server.getClientList().add(nc);
             System.out.println("Server : taille liste = "+server.getClientList().size());
 

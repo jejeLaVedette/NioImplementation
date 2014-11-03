@@ -41,7 +41,7 @@ public class NioEngineImp extends NioEngine{
         nioChannels= new HashMap<SocketChannel, NioChannelImp>();
         //we keep the link between SC and CB
         nioChannelCallback = new HashMap<SocketChannel, ConnectCallback>();
-        portBegin = 6667;
+        portBegin = 3332;
         portMargin = 100;
     }
 
@@ -99,7 +99,6 @@ public class NioEngineImp extends NioEngine{
             SelectionKey key = (SelectionKey) selectedKeys.next();
             selectedKeys.remove();
             if (key.isConnectable()) {
-                System.out.println("test connexion");
                 handleConnection(key);
                 break;
             }

@@ -1,5 +1,6 @@
 package multiCast.client.kernel.callbackClient;
 
+import multiCast.client.Client;
 import multiCast.client.kernel.EntitiesClientImpl;
 import multiCast.client.kernel.Message;
 import nio.engine.DeliverCallback;
@@ -14,7 +15,7 @@ import java.nio.ByteBuffer;
  */
 
 public class DeliverCallbackImp implements DeliverCallback{
-    private EntitiesClientImpl entities;
+    private Client client;
 
 	@Override
 	public void deliver(NioChannel arg0, ByteBuffer arg1) {
@@ -28,18 +29,18 @@ public class DeliverCallbackImp implements DeliverCallback{
             int identityMessage = extractIdentityMessage(true ,m);
 
 
-            entities.updateClock(clockACK);
-            entities.receiveACK(identityMessage, identityACK, clockMessage);
-            entities.checkAndPrintMessage();
+            client.updateClock(clockACK);
+            client.receiveACK(identityMessage, identityACK, clockMessage);
+            client.checkAndPrintMessage();
         } else{
             String data = extractData(m);
             int clock = extractClockMessage(false, m);
             int identity = extractIdentityMessage(false, m);
 
             Message message = new Message(clock, identity, data, 5);
-            entities.putMessage(message);
-            entities.updateClock(clock);
-            entities.sendACKToEveryBody(m);
+            client.putMessage(message);
+            client.updateClock(clock);
+            client.sendACKToEveryBody(m);
 
         }
 

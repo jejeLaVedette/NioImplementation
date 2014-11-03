@@ -20,7 +20,7 @@ public class ServerConnectCallbackImp implements ConnectCallback{
 	public void connected(NioChannel nioChannel) {
 		//System.out.println("in connected");
 		System.out.println("Server : Connected to : " + nioChannel.getRemoteAddress());
-		String message = "ping pong allezzzzz!";
+		String message = " Serveur : ping pong!";
 		//we send the message
 		nioChannel.send(message.getBytes(), 0, message.getBytes().length);
 	}

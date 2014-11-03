@@ -12,7 +12,7 @@ public class TestNio {
 
 	public static void main(String args[]) throws Exception {
 
-		new Thread(new Server(1999)).start();
+		new Thread(new Server(42)).start();
 
 		System.out.println("Server launch");
 
@@ -32,7 +32,7 @@ public class TestNio {
 			e.printStackTrace();
 			System.exit(1);
 		}
-		new Thread(new Client(1,0)).start();
+		new Thread(new Client(2,0)).start();
 
 		System.out.println("Client 2 launch");
 
@@ -42,7 +42,7 @@ public class TestNio {
 			e.printStackTrace();
 			System.exit(1);
 		}
-		new Thread(new Client(1,0)).start();
+		new Thread(new Client(3,0)).start();
 
 		System.out.println("Client 3 launch");
 
