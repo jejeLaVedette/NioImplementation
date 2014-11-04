@@ -11,40 +11,25 @@ import multiCast.server.Server;
 public class TestNio {
 
 	public static void main(String args[]) throws Exception {
+        int nbMaxClient = 3;
+        int i = 1;
 
-		new Thread(new Server(42)).start();
+		new Thread(new Server(42, nbMaxClient)).start();
 
 		System.out.println("Server launch");
 
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-			System.exit(1);
-		}
-		new Thread(new Client(1,0)).start();
+        while(i <= nbMaxClient){
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                System.exit(1);
+            }
+            new Thread(new Client(i,0)).start();
 
-		System.out.println("Client 1 launch");
-
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-			System.exit(1);
-		}
-		new Thread(new Client(2,0)).start();
-
-		System.out.println("Client 2 launch");
-
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-			System.exit(1);
-		}
-		new Thread(new Client(3,0)).start();
-
-		System.out.println("Client 3 launch");
+            System.out.println("Client " +i+ "launch");
+            i++;
+        }
 
 	}
 

@@ -38,7 +38,7 @@ public class Client implements Runnable, IChatRoom{
         this.messageList = new ArrayList<>();
         this.bufferACKList = new ArrayList<>();
         this.clientList = new ArrayList<>();
-        new ChatGUI("Client"+this.identity,this);
+        new ChatGUI("Client "+this.identity,this);
     }
 
 
@@ -137,11 +137,6 @@ public class Client implements Runnable, IChatRoom{
         } else {
             this.messageList.get(i).receiveACK(identityACK);
         }
-    }
-
-
-    public int getClock(){
-        return this.clock;
     }
 
     public void sendACKToEveryBody(String m){

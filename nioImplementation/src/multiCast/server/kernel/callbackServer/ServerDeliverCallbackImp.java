@@ -19,12 +19,12 @@ public class ServerDeliverCallbackImp implements DeliverCallback{
 
     public ServerDeliverCallbackImp(Server server) {
         this.server = server;
-        System.out.println("Server accepteCB : "+server);
+        this.server.getChatServer().deliver("Server accepte Call Back : "+server);
     }
 
     @Override
 	public void deliver(NioChannel nc, ByteBuffer bb) {
-        System.out.println("Server : Message received from : " + nc.getRemoteAddress() + " : " + new String(bb.array()));
+        this.server.getChatServer().deliver("Server : Message received from : " + nc.getRemoteAddress() + " : " + new String(bb.array()));
 
         String m = new String(bb.array());
 
