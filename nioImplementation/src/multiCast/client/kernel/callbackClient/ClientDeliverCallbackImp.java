@@ -1,9 +1,7 @@
 package multiCast.client.kernel.callbackClient;
 
 import multiCast.client.Client;
-import multiCast.client.kernel.EntitiesClientImpl;
 import multiCast.client.kernel.Message;
-import multiCast.server.kernel.callbackServer.ServerConnectCallbackImp;
 import nio.engine.DeliverCallback;
 import nio.engine.NioChannel;
 
