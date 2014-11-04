@@ -338,13 +338,13 @@ public class ChatGUI {
                 protected Object doInBackground() throws Exception {
                     int i = 0;
                     while(i < 20){
-                        room.send("La barbe à ta maman il faut la raison "+i+" fois");
+                        room.send(clientName + " says: nous sommes victimes de la causalité "+i+" fois");
                         try {
-                			Thread.sleep(100);
-                		} catch (InterruptedException e) {
-                			e.printStackTrace();
-                			System.exit(1);
-                		}
+                            Thread.sleep(100);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                            System.exit(1);
+                        }
                         i++;
                     }
                     return null;
