@@ -178,8 +178,8 @@ public class Client implements Runnable, IChatRoom{
 
     @Override
     public void send(String msg) throws ChatException {
-       this.nioEngine.getSelector().wakeup();
        sendMessageToEveryBody(msg);
+       this.nioEngine.getSelector().wakeup();
 
     }
 
@@ -193,7 +193,7 @@ public class Client implements Runnable, IChatRoom{
             this.clock++;
         }
 
-        Message message = new Message(clockTemp, identity, data, getClientList().size());
+        Message message = new Message(clockTemp, identity, m, getClientList().size());
         putMessage(message);
         updateClock(clock);
         sendACKToEveryBody(data);

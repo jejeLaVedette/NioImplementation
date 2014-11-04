@@ -70,6 +70,7 @@ public class ClientDeliverCallbackImp implements DeliverCallback{
             client.sendACKToEveryBody(m);
             //on simule le fait qu'on est reçu notre propre ack
             client.receiveACK(identity,this.client.getIdentity(),clock);
+            client.checkAndPrintMessage();
 
         }
 	}
