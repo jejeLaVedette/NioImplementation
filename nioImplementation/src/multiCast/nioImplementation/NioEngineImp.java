@@ -180,6 +180,7 @@ public class NioEngineImp extends NioEngine{
 					}
 				}
 			} catch (Exception e) {
+                e.printStackTrace();
 				panic("Error during the selection of a key");
 			}
 		}

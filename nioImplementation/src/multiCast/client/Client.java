@@ -1,5 +1,8 @@
 package multiCast.client;
 
+import multiCast.client.gui.ChatException;
+import multiCast.client.gui.ChatGUI;
+import multiCast.client.gui.IChatRoom;
 import multiCast.client.kernel.ACK;
 import multiCast.client.kernel.Message;
 import multiCast.client.kernel.callbackClient.ClientAcceptCallbackImp;
@@ -16,7 +19,7 @@ import java.util.ArrayList;
 /**
  * Created by augustin on 30/10/14.
  */
-public class Client implements Runnable{
+public class Client implements Runnable, IChatRoom{
 	
 	private int identity;
 	private int clock;
@@ -27,6 +30,7 @@ public class Client implements Runnable{
     //client list
     private ArrayList<NioChannel> clientList;
     private NioEngineImp nioEngine;
+    private IChatListener chat;
 	
     public Client(int identity, int clock){
     	this.identity=identity;
@@ -34,6 +38,7 @@ public class Client implements Runnable{
         this.messageList = new ArrayList<>();
         this.bufferACKList = new ArrayList<>();
         this.clientList = new ArrayList<>();
+        new ChatGUI("Client"+this.identity,this);
     }
 
 
@@ -112,7 +117,7 @@ public class Client implements Runnable{
             i++;
         }
 
-        System.out.println(data);
+       this.chat.deliver(data);
     }
 
     public void receiveACK(int identityMessage, int identityACK, int clockMessage){
@@ -139,7 +144,7 @@ public class Client implements Runnable{
     }
 
     public void sendACKToEveryBody(String m){
-        String data = "[ack]["+this.identity+"]["+this.identity+"]"+m;
+        String data = "[ack]["+this.identity+"]["+this.clock+"]"+m;
         for(int i = 0; i < clientList.size(); i++){
             clientList.get(i).send(data.getBytes(), 0, data.getBytes().length);
         }
@@ -157,4 +162,33 @@ public class Client implements Runnable{
         return this.nioEngine;
     }
 
+    @Override
+    public void enter(String clientName, IChatListener l) throws ChatException {
+        if(this.chat == null){
+            this.chat = l;
+        }
+
+        this.chat.joined(clientName);
+    }
+
+    @Override
+    public void leave() throws ChatException {
+
+    }
+
+    @Override
+    public void send(String msg) throws ChatException {
+       this.nioEngine.getSelector().wakeup();
+       sendMessageToEveryBody(msg);
+
+    }
+
+    private void sendMessageToEveryBody(String m){
+        String data = "["+this.identity+"]["+this.clock+"]"+m;
+        System.out.println("send a message from : "+this.identity+" to everybody");
+        for(int i = 0; i < clientList.size(); i++){
+            clientList.get(i).send(data.getBytes(), 0, data.getBytes().length);
+            this.clock++;
+        }
+    }
 }

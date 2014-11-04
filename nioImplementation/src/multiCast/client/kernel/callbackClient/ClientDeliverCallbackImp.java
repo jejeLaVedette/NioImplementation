@@ -59,6 +59,7 @@ public class ClientDeliverCallbackImp implements DeliverCallback{
 
 
         } else { // le client a reçu un message
+            System.out.println("Client "+this.client.getIdentity()+ "receive msg");
             String data = extractData(m);
             int clock = extractClockMessage(false, m);
             int identity = extractIdentityMessage(false, m);
