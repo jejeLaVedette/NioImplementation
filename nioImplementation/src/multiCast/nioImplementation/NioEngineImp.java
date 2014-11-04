@@ -25,7 +25,8 @@ public class NioEngineImp extends NioEngine{
 	private Selector selector;
     private final int portBegin;
     private final int portMargin;
-    private int port;
+    private int connectPort;
+    private int listenPort;
 
 	private HashMap<ServerSocketChannel, NioServer> nioServers;
 	private HashMap<SocketChannel, NioChannelImp> nioChannels;
@@ -36,11 +37,11 @@ public class NioEngineImp extends NioEngine{
         //we create the selector
         selector = SelectorProvider.provider().openSelector();
         //we keep the link between SC and multiCast.server
-        nioServers= new HashMap<ServerSocketChannel, NioServer>();
+        nioServers= new HashMap<>();
         //we keep the link between SC and channel
-        nioChannels= new HashMap<SocketChannel, NioChannelImp>();
+        nioChannels= new HashMap<>();
         //we keep the link between SC and CB
-        nioChannelCallback = new HashMap<SocketChannel, ConnectCallback>();
+        nioChannelCallback = new HashMap<>();
         portBegin = 3332;
         portMargin = 100;
     }
@@ -49,13 +50,13 @@ public class NioEngineImp extends NioEngine{
         //we create the selector
         selector = SelectorProvider.provider().openSelector();
         //we keep the link between SC and multiCast.server
-        nioServers= new HashMap<ServerSocketChannel, NioServer>();
+        nioServers= new HashMap<>();
         //we keep the link between SC and channel
-        nioChannels= new HashMap<SocketChannel, NioChannelImp>();
+        nioChannels= new HashMap<>();
         //we keep the link between SC and CB
-        nioChannelCallback = new HashMap<SocketChannel, ConnectCallback>();
+        nioChannelCallback = new HashMap<>();
         this.portBegin = portBegin;
-        this.portMargin=portMargin;
+        this.portMargin = portMargin;
     }
 
     public void connect(InetAddress address, ConnectCallback cc){
@@ -67,9 +68,9 @@ public class NioEngineImp extends NioEngine{
             try{
                 connect(address, portTest, cc);
                 isConnected = true;
-                this.port = portTest;
+                this.connectPort = portTest;
             } catch (IOException ex){
-                System.out.println("impossible de se connecter avec le port : "+portTest);
+                System.out.println("failed to connect with the port : "+portTest);
                 isConnected = false;
             }
             i++;
@@ -117,9 +118,9 @@ public class NioEngineImp extends NioEngine{
             try{
                 server = listen(portTest, cc);
                 isListeaning = true;
-                this.port = portTest;
+                this.listenPort = portTest;
             } catch (IOException ex){
-                System.out.println("impossible de se connecter avec le port : "+portTest);
+                System.out.println("failed to listen with the port : "+portTest);
                 isListeaning = false;
             }
             i++;
@@ -271,5 +272,13 @@ public class NioEngineImp extends NioEngine{
 			panic("Impossible to ask writing");
 		}
 	}
+
+    public int getListenPort(){
+        return this.listenPort;
+    }
+
+    public int getConnectPort(){
+        return this.connectPort;
+    }
 
 }

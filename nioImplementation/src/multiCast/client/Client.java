@@ -1,35 +1,34 @@
 package multiCast.client;
 
-import multiCast.Entities;
 import multiCast.client.kernel.ACK;
-import multiCast.client.kernel.EntitiesClientImpl;
 import multiCast.client.kernel.Message;
-import multiCast.nioImplementation.ConnectCallbackImp;
+import multiCast.client.kernel.callbackClient.ClientAcceptCallbackImp;
 import multiCast.nioImplementation.NioEngineImp;
 import multiCast.server.kernel.callbackServer.ServerConnectCallbackImp;
 import nio.engine.NioChannel;
 import nio.engine.NioEngine;
+import nio.engine.NioServer;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by augustin on 30/10/14.
  */
-public class Client extends NioEngineImp implements Runnable{
+public class Client implements Runnable{
 	
 	private int identity;
 	private int clock;
+    private int listenPort;
 
     private ArrayList<Message> messageList;
     private ArrayList<ACK> bufferACKList;
     //client list
     private ArrayList<NioChannel> clientList;
+    private NioEngineImp nioEngine;
 	
     public Client(int identity, int clock) throws Exception{
-		super(identity, clock);
 		// TODO Auto-generated constructor stub
     	this.identity=identity;
     	this.clock=clock;
@@ -38,10 +37,10 @@ public class Client extends NioEngineImp implements Runnable{
         this.clientList = new ArrayList<>();
     }
 
-	private NioEngineImp nioEngine;
+
 
     public void run() {
-
+        NioServer nioServer;
 		try{
 			nioEngine = new NioEngineImp();
 		}catch (Exception e) {
@@ -49,11 +48,18 @@ public class Client extends NioEngineImp implements Runnable{
 		}
 
 		try {
-			nioEngine.connect(InetAddress.getByName("localhost"), new ServerConnectCallbackImp(this));
+			nioEngine.connect(InetAddress.getByName("localhost"), 6667,new ServerConnectCallbackImp(this));
 		} catch (IOException e) {
 			NioEngine.panic("Error during the connection attempt of the client");
 		}
 
+        nioServer = nioEngine.listen(new ClientAcceptCallbackImp(this));
+
+        if(nioServer == null){
+            NioEngine.panic("failed listen port with a client number : "+this.identity);
+        }
+
+        this.listenPort = nioEngine.getListenPort();
 		//System.out.println("client launch");
 
 		nioEngine.mainloop();
@@ -142,6 +148,14 @@ public class Client extends NioEngineImp implements Runnable{
 
     public ArrayList<NioChannel> getClientList(){
         return this.clientList;
+    }
+
+    public int getListenPort(){
+        return this.listenPort;
+    }
+
+    public NioEngineImp getNioEngine(){
+        return this.nioEngine;
     }
 
 }

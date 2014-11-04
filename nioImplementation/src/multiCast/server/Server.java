@@ -7,6 +7,7 @@ import nio.engine.NioChannel;
 import nio.engine.NioEngine;
 import nio.engine.NioServer;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,14 +18,16 @@ import java.util.HashMap;
 public class Server extends Entities implements Runnable{
 
 	private ArrayList<NioChannel> clientList;
-	private static int maxClientRoom;
+	private int maxClientRoom;
+    private HashMap<NioChannel,Integer> mapChannelPort;
 
     public Server(int identity){
         this.identity = identity;
         this.clock = 0;
-        this.addressHashMap = new HashMap<String, InetAddress>();
-        this.integerHashMap = new HashMap<String, Integer>();
-        clientList = new ArrayList<NioChannel>();
+        this.addressHashMap = new HashMap<>();
+        this.integerHashMap = new HashMap<>();
+        this.mapChannelPort = new HashMap<>();
+        clientList = new ArrayList<>();
         maxClientRoom = 3;
         }
 
@@ -38,10 +41,10 @@ public class Server extends Entities implements Runnable{
             NioEngine.panic("Error during the creation of the server");
         }
 
-        NioServer server = nioEngine.listen(new ServerAcceptCallbackImp(this));
-        if(server == null){
+        try {
+            nioEngine.listen(6667,new ServerAcceptCallbackImp(this));
+        } catch (IOException e) {
             NioEngine.panic("creation server failed");
-            System.exit(-1);
         }
 
         nioEngine.mainloop();
@@ -49,11 +52,14 @@ public class Server extends Entities implements Runnable{
 
 
 	public ArrayList<NioChannel> getClientList() {
-		// TODO Auto-generated method stub
 		return this.clientList;
 	}
 
-    public static int getMaxClientRoom() {
+    public HashMap<NioChannel, Integer> getMapChannelPort(){
+        return this.mapChannelPort;
+    }
+
+    public int getMaxClientRoom() {
         return maxClientRoom;
     }
 }

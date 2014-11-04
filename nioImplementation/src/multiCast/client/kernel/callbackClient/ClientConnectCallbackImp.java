@@ -1,4 +1,4 @@
-package multiCast.nioImplementation;
+package multiCast.client.kernel.callbackClient;
 
 import multiCast.client.Client;
 import nio.engine.ConnectCallback;
@@ -10,11 +10,11 @@ import nio.engine.NioChannel;
  *
  */
 
-public class ConnectCallbackImp implements ConnectCallback{
+public class ClientConnectCallbackImp implements ConnectCallback{
 
     private Client client;
 
-    public ConnectCallbackImp(Client client){
+    public ClientConnectCallbackImp(Client client){
         this.client=client;
     }
 
@@ -26,9 +26,9 @@ public class ConnectCallbackImp implements ConnectCallback{
 	@Override
 	public void connected(NioChannel nioChannel) {
 		System.out.println("Client "+client.getIdentity()+" connected to : " + nioChannel.getRemoteAddress());
-		String message = "Client "+client.getIdentity()+" : ping pong!";
-		//we send the message
-		nioChannel.send(message.getBytes(), 0, message.getBytes().length);
+//		String message = "Client "+client.getIdentity()+" : ping pong!";
+//		//we send the message
+//		nioChannel.send(message.getBytes(), 0, message.getBytes().length);
 	}
 
 }

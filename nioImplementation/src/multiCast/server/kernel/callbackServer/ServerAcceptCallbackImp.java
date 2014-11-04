@@ -25,7 +25,7 @@ public class ServerAcceptCallbackImp implements AcceptCallback {
 
 	@Override
 	public void accepted(NioServer ns, NioChannel nc) {
-        if(server.getClientList().size() < Server.getMaxClientRoom()){
+        if(server.getClientList().size() < this.server.getMaxClientRoom()){
             String msg = "[ADD] cheat msg";
             System.out.println("Server : connection accepted on port : "+ns.getPort());
             server.getClientList().add(nc);

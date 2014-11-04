@@ -17,10 +17,10 @@ import java.nio.ByteBuffer;
  *
  */
 
-public class DeliverCallbackImp implements DeliverCallback{
+public class ClientDeliverCallbackImp implements DeliverCallback{
     private Client client;
 
-    public DeliverCallbackImp(Client client){
+    public ClientDeliverCallbackImp(Client client){
         this.client=client;
     }
 
@@ -41,17 +41,19 @@ public class DeliverCallbackImp implements DeliverCallback{
             client.receiveACK(identityMessage, identityACK, clockMessage);
             client.checkAndPrintMessage();
         } else if(m.contains("[ADD")){ //le client sait que le server la add a la liste
-            //le client previent le server qu'il est pret à recevoir la liste complete
-            System.out.println("Client "+this.client.getIdentity() +" receove msg ADD");
-            String msgRetour = "[OKADD]";
+            //le client previent le server qu'il est pret à recevoir la liste complete et il fournit son port d'écoute
+            System.out.println("Client "+this.client.getIdentity() +" receive msg ADD");
+
+            String msgRetour = "[OKADD]["+this.client.getListenPort()+"]";
             nc.send(msgRetour.getBytes(), 0, msgRetour.getBytes().length);
 
         } else if(m.contains("[LISTE]")) {
-            System.out.println("Client " + this.client.getIdentity() + " receive msg from server about complete liste");
-            String msg = m.split("\\[")[2].split("\\]")[0];
+            System.out.println("Client " + this.client.getIdentity() + " receive msg from server about complete list");
+            String ip = m.split("\\[")[2].split("\\]")[0];
+            int port = Integer.parseInt(m.split("\\[")[3].split("\\]")[0]);
 
             try {
-                this.client.connect(InetAddress.getByName(msg), new ServerConnectCallbackImp(client));
+                this.client.getNioEngine().connect(InetAddress.getByName(ip), port, new ServerConnectCallbackImp(client));
             } catch (IOException e) {
                 e.printStackTrace();
             }

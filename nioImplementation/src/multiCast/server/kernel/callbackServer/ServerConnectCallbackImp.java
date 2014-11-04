@@ -1,7 +1,7 @@
 package multiCast.server.kernel.callbackServer;
 
 import multiCast.client.Client;
-import multiCast.client.kernel.callbackClient.DeliverCallbackImp;
+import multiCast.client.kernel.callbackClient.ClientDeliverCallbackImp;
 import nio.engine.ConnectCallback;
 import nio.engine.NioChannel;
 
@@ -31,7 +31,7 @@ public class ServerConnectCallbackImp implements ConnectCallback{
 		//we send the message
 		//nioChannel.send(message.getBytes(), 0, message.getBytes().length);
         //client.setNioChannelServer(channel);
-        nioChannel.setDeliverCallback(new DeliverCallbackImp(client));
+        nioChannel.setDeliverCallback(new ClientDeliverCallbackImp(client));
 	}
 
 }
