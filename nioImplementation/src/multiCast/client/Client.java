@@ -73,6 +73,13 @@ public class Client implements Runnable, IChatRoom{
         return identity;
     }
 
+    /**
+     *
+     * @param message est le message qu'on vient de recevoir.
+     *                Le message est placé suivant son horloge dans la liste des messages
+     *                On check ensuite si on n'a pas reçu d'ack correspondant à ce message.
+     *                Si c'est le cas, on prend soin de retirer l'ack de la liste des ack en attentes, et de mettre à jour le tableau de boolean du message.
+     */
     public void putMessage(Message message){
         int i = 0, j = 0;
         int size = this.messageList.size();
@@ -107,6 +114,10 @@ public class Client implements Runnable, IChatRoom{
         this.clock = Math.max(this.clock, clockReceive) + 1;
     }
 
+    /**
+     * Cette methode va permettre de vérifier qu'il n'y a pas de message à afficher.
+     * On devra appeler cette methode à chaque fin de traitement de la reception d'un ack ou d'un message
+     */
     public String checkAndPrintMessage(){
         int i = 0;
         int size = messageList.size();
@@ -121,6 +132,16 @@ public class Client implements Runnable, IChatRoom{
         return data;
     }
 
+    /**
+     *
+     * @param identityMessage il s'agit de l'id du client qui a envoyé le message
+     * @param identityACK il s'agit de l'id du client qui a envoyé l'ack
+     * @param clockMessage il s'agit de l'horloge du message (et non pas de l'ack)
+     *
+     * Lors de la reception d'un ack, cette methode va permettre de savoir si on a reçu un message correspond à ce message
+     * Si c'est le cas, alors on mettra à jour le tableau de booleen.
+     * Sinon on mettra l'ack dans une liste temporaire en attendant l'arriver du message.
+     */
     public void receiveACK(int identityMessage, int identityACK, int clockMessage){
         int i = 0;
         int size = this.messageList.size();
@@ -194,7 +215,7 @@ public class Client implements Runnable, IChatRoom{
         putMessage(message);
         updateClock(clock);
         sendACKToEveryBody(data);
-        //on simule le fait qu'on est reçu notre propre ack
+        //on simule le fait qu'on a reçu notre propre ack
         receiveACK(identity,getIdentity(),clock);
     }
 }

@@ -12,7 +12,6 @@ import nio.engine.NioServer;
 
 public class ServerAcceptCallbackImp implements AcceptCallback {
 
-	//CA SERA TOUT DANS CLIENT APRES HAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 	private Server server;
 
 	public ServerAcceptCallbackImp(Server server) {

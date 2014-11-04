@@ -46,6 +46,8 @@ public class ClientDeliverCallbackImp implements DeliverCallback{
             nc.send(msgRetour.getBytes(), 0, msgRetour.getBytes().length);
 
         } else if(m.contains("[LISTE]")) {
+            // ce message va contenir une ip et un port d'un des clients différent de celui actuel.
+
             System.out.println("Client " + this.client.getIdentity() + " receive msg from server about complete list");
             String ip = m.split("\\[")[2].split("\\]")[0];
             int port = Integer.parseInt(m.split("\\[")[3].split("\\]")[0]);

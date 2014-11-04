@@ -46,7 +46,7 @@ public class Message {
 			result = result && ack[i];
 			i++;
 		}
-		System.out.println("receveidAllACK : "+result);
+
 		return result;
 	}
 

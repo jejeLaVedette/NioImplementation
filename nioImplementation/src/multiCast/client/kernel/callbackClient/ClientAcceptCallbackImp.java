@@ -12,7 +12,7 @@ import nio.engine.NioServer;
  */
 
 public class ClientAcceptCallbackImp implements AcceptCallback {
-	//CA SERA TOUT DANS CLIENT APRES HAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+
 	private Client client;
 
 	public ClientAcceptCallbackImp(Client client) {
