@@ -28,8 +28,7 @@ public class Client implements Runnable{
     private ArrayList<NioChannel> clientList;
     private NioEngineImp nioEngine;
 	
-    public Client(int identity, int clock) throws Exception{
-		// TODO Auto-generated constructor stub
+    public Client(int identity, int clock){
     	this.identity=identity;
     	this.clock=clock;
         this.messageList = new ArrayList<>();
@@ -142,7 +141,7 @@ public class Client implements Runnable{
     public void sendACKToEveryBody(String m){
         String data = "[ack]["+this.identity+"]["+this.identity+"]"+m;
         for(int i = 0; i < clientList.size(); i++){
-            clientList.get(i).send(m.getBytes(), 0, m.getBytes().length);
+            clientList.get(i).send(data.getBytes(), 0, data.getBytes().length);
         }
     }
 

@@ -59,15 +59,17 @@ public class ClientDeliverCallbackImp implements DeliverCallback{
             }
 
 
-        } else {
+        } else { // le client a reçu un message
             String data = extractData(m);
             int clock = extractClockMessage(false, m);
             int identity = extractIdentityMessage(false, m);
 
-            Message message = new Message(clock, identity, data, 5);
+            Message message = new Message(clock, identity, data, this.client.getClientList().size());
             client.putMessage(message);
             client.updateClock(clock);
             client.sendACKToEveryBody(m);
+            //on simule le fait qu'on est reçu notre propre ack
+            client.receiveACK(identity,this.client.getIdentity(),clock);
 
         }
 

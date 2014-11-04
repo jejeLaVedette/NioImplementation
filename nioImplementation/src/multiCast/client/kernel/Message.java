@@ -31,7 +31,7 @@ public class Message {
     }
 
     public void receiveACK(int identityACK){
-        this.ack[identityACK] = true;
+        this.ack[identityACK-1] = true;
     }
 
     public boolean receveidAllACK(){
