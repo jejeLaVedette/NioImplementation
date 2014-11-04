@@ -26,7 +26,6 @@ public class ClientDeliverCallbackImp implements DeliverCallback{
 
 	@Override
 	public void deliver(NioChannel nc, ByteBuffer bb) {
-		//System.out.println("Message received from : " + arg0.getRemoteAddress() + " : " + new String(arg1.array()));
         String m = new String(bb.array());
 
 
@@ -72,14 +71,7 @@ public class ClientDeliverCallbackImp implements DeliverCallback{
             client.receiveACK(identity,this.client.getIdentity(),clock);
 
         }
-
-		//arg0.send(ping.getBytes(),0,ping.getBytes().length);
-
 	}
-
-    /*private void sendACKToEveryBody(String m){
-        String data = "[ack]["+entities.getIdentity()+"]["+entities.getClock()+"]"+m;
-    }*/
 
     private String extractData(String m){
         String[] buff = m.split("\\[");
