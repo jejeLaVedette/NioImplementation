@@ -54,7 +54,7 @@ public class Message {
 
     @Override
     public String toString(){
-        return "["+this.identity+"]"+this.data;
+        return this.data;
     }
 
     private void initAck(){

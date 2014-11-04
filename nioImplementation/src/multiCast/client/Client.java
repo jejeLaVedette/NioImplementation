@@ -184,11 +184,20 @@ public class Client implements Runnable, IChatRoom{
     }
 
     private void sendMessageToEveryBody(String m){
-        String data = "["+this.identity+"]["+this.clock+"]"+m;
+        int clockTemp = clock;
+        String data = "["+this.identity+"]["+clockTemp+"]"+m;
         System.out.println("send a message from : "+this.identity+" to everybody");
+
         for(int i = 0; i < clientList.size(); i++){
             clientList.get(i).send(data.getBytes(), 0, data.getBytes().length);
             this.clock++;
         }
+
+        Message message = new Message(clockTemp, identity, data, getClientList().size());
+        putMessage(message);
+        updateClock(clock);
+        sendACKToEveryBody(data);
+        //on simule le fait qu'on est reçu notre propre ack
+        receiveACK(identity,getIdentity(),clock);
     }
 }
