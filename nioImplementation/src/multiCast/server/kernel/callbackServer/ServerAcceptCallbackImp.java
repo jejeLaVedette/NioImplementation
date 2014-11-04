@@ -1,13 +1,9 @@
 package multiCast.server.kernel.callbackServer;
 
-import multiCast.client.kernel.EntitiesClientImpl;
 import multiCast.server.Server;
 import nio.engine.AcceptCallback;
 import nio.engine.NioChannel;
 import nio.engine.NioServer;
-
-import java.io.IOException;
-
 /**
  * 
  * @author Jérôme

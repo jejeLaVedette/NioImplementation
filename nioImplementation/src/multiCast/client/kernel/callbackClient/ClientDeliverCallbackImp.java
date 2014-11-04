@@ -37,6 +37,7 @@ public class ClientDeliverCallbackImp implements DeliverCallback{
             client.updateClock(clockACK);
             client.receiveACK(identityMessage, identityACK, clockMessage);
             client.checkAndPrintMessage();
+
         } else if(m.contains("[ADD")){ //le client sait que le server la add a la liste
             //le client previent le server qu'il est pret à recevoir la liste complete et il fournit son port d'écoute
             System.out.println("Client "+this.client.getIdentity() +" receive msg ADD");
@@ -68,6 +69,7 @@ public class ClientDeliverCallbackImp implements DeliverCallback{
             client.sendACKToEveryBody(m);
             //on simule le fait qu'on est reçu notre propre ack
             client.receiveACK(identity,this.client.getIdentity(),clock);
+
             client.checkAndPrintMessage();
 
         }

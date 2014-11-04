@@ -107,19 +107,18 @@ public class Client implements Runnable, IChatRoom{
         this.clock = Math.max(this.clock, clockReceive) + 1;
     }
 
-    public void checkAndPrintMessage(){
+    public String checkAndPrintMessage(){
         int i = 0;
         int size = messageList.size();
         String data = "";
 
         while((i < size)&&(this.messageList.get(0).receveidAllACK())){
-            data = data + messageList.remove(0).toString();
+            data = messageList.remove(0).toString();
+            this.chat.deliver(data);
             i++;
         }
 
-        if(!data.equals("")) {
-            this.chat.deliver(data);
-        }
+        return data;
     }
 
     public void receiveACK(int identityMessage, int identityACK, int clockMessage){
