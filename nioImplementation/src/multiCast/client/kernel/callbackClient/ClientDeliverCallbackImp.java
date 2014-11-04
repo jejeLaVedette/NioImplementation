@@ -42,6 +42,7 @@ public class ClientDeliverCallbackImp implements DeliverCallback{
             //le client previent le server qu'il est pret à recevoir la liste complete et il fournit son port d'écoute
             System.out.println("Client "+this.client.getIdentity() +" receive msg ADD");
 
+            // on transmet notre port d'écoute au serveur pour qu'il puisse la transmettre aux autres clients
             String msgRetour = "[OKADD]["+this.client.getListenPort()+"]";
             nc.send(msgRetour.getBytes(), 0, msgRetour.getBytes().length);
 

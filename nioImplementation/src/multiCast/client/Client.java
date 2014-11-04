@@ -42,7 +42,10 @@ public class Client implements Runnable, IChatRoom{
     }
 
 
-
+    /**
+     * on se place ensuite en écoute afin de pouvoir recevoir des connexions d'autres clients (on transmettra ensuite notre port et notre ip au serveur
+     * pour qu'il puisse la transmettre aux autres clients
+     */
     public void run() {
         NioServer nioServer;
         try{
@@ -51,11 +54,15 @@ public class Client implements Runnable, IChatRoom{
             NioEngine.panic("Error during the creation of the client");
         }
 
+        // On se connecte d'abord au serveur
+
         try {
             nioEngine.connect(InetAddress.getByName("localhost"), 6667,new ClientConnectCallbackImp(this));
         } catch (IOException e) {
             NioEngine.panic("Error during the connection attempt of the client");
         }
+
+        //
 
         nioServer = nioEngine.listen(new ClientAcceptCallbackImp(this));
 
