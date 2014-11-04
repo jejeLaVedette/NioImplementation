@@ -31,6 +31,8 @@ public class Message {
     }
 
     public void receiveACK(int identityACK){
+        System.out.println("identityACK "+identityACK);
+        System.out.println("size of tab ack:"+this.ack.length);
         this.ack[identityACK-1] = true;
     }
 

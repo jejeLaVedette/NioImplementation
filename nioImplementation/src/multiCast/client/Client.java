@@ -6,8 +6,8 @@ import multiCast.client.gui.IChatRoom;
 import multiCast.client.kernel.ACK;
 import multiCast.client.kernel.Message;
 import multiCast.client.kernel.callbackClient.ClientAcceptCallbackImp;
+import multiCast.client.kernel.callbackClient.ClientConnectCallbackImp;
 import multiCast.nioImplementation.NioEngineImp;
-import multiCast.server.kernel.callbackServer.ServerConnectCallbackImp;
 import nio.engine.NioChannel;
 import nio.engine.NioEngine;
 import nio.engine.NioServer;
@@ -52,7 +52,7 @@ public class Client implements Runnable, IChatRoom{
 		}
 
 		try {
-			nioEngine.connect(InetAddress.getByName("localhost"), 6667,new ServerConnectCallbackImp(this));
+			nioEngine.connect(InetAddress.getByName("localhost"), 6667,new ClientConnectCallbackImp(this));
 		} catch (IOException e) {
 			NioEngine.panic("Error during the connection attempt of the client");
 		}

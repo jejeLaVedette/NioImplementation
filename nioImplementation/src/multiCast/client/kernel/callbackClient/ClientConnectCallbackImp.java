@@ -26,9 +26,8 @@ public class ClientConnectCallbackImp implements ConnectCallback{
 	@Override
 	public void connected(NioChannel nioChannel) {
 		System.out.println("Client "+client.getIdentity()+" connected to : " + nioChannel.getRemoteAddress());
-//		String message = "Client "+client.getIdentity()+" : ping pong!";
-//		//we send the message
-//		nioChannel.send(message.getBytes(), 0, message.getBytes().length);
+        this.client.getClientList().add(nioChannel);
+        nioChannel.setDeliverCallback(new ClientDeliverCallbackImp(client));
 	}
 
 }

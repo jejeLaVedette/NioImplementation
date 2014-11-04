@@ -52,7 +52,7 @@ public class ClientDeliverCallbackImp implements DeliverCallback{
             int port = Integer.parseInt(m.split("\\[")[3].split("\\]")[0]);
 
             try {
-                this.client.getNioEngine().connect(InetAddress.getByName(ip), port, new ServerConnectCallbackImp(client));
+                this.client.getNioEngine().connect(InetAddress.getByName(ip), port, new ClientConnectCallbackImp(client));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -63,7 +63,7 @@ public class ClientDeliverCallbackImp implements DeliverCallback{
             String data = extractData(m);
             int clock = extractClockMessage(false, m);
             int identity = extractIdentityMessage(false, m);
-
+            System.out.println("size client list when i receive a fucking message : "+this.client.getClientList().size());
             Message message = new Message(clock, identity, data, this.client.getClientList().size());
             client.putMessage(message);
             client.updateClock(clock);
