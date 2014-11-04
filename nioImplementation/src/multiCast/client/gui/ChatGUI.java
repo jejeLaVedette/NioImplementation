@@ -19,6 +19,8 @@ import java.util.Vector;
 
 import multiCast.client.gui.IChatRoom.IChatListener;
 
+import javax.swing.*;
+
 public class ChatGUI {
 
     EventContainer cont;
@@ -331,7 +333,19 @@ public class ChatGUI {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            SwingWorker swingWorker = new SwingWorker() {
+                @Override
+                protected Object doInBackground() throws Exception {
+                    int i = 0;
+                    while(i < 100){
+                        room.send("La barbe à ta maman il faut la raison "+i+" fois");
+                        i++;
+                    }
+                    return null;
+                }
+            };
 
+            swingWorker.execute();
         }
     }
 

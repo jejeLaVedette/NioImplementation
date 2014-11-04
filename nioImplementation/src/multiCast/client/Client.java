@@ -117,7 +117,9 @@ public class Client implements Runnable, IChatRoom{
             i++;
         }
 
-       this.chat.deliver(data);
+        if(!data.equals("")) {
+            this.chat.deliver(data);
+        }
     }
 
     public void receiveACK(int identityMessage, int identityACK, int clockMessage){
